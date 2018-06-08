@@ -6,8 +6,8 @@ require "cose/version"
 Gem::Specification.new do |spec|
   spec.name          = "cose"
   spec.version       = COSE::VERSION
-  spec.authors       = ["Gonzalo Rodriguez"]
-  spec.email         = ["gonzalo@cedarcode.com"]
+  spec.authors       = ["Gonzalo Rodriguez", "Braulio Martinez"]
+  spec.email         = ["gonzalo@cedarcode.com", "braulio@cedarcode.com"]
 
   spec.summary       = "COSE in ruby"
   spec.license       = "MIT"
