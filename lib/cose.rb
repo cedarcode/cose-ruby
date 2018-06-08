@@ -1,5 +1,5 @@
 require "cose/version"
 
-module Cose
+module COSE
   # Your code goes here...
 end

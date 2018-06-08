@@ -1,9 +1,5 @@
-RSpec.describe Cose do
+RSpec.describe COSE do
   it "has a version number" do
-    expect(Cose::VERSION).not_to be nil
-  end
-
-  it "does something useful" do
-    expect(false).to eq(true)
+    expect(COSE::VERSION).not_to be nil
   end
 end

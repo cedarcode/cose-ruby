@@ -1,3 +1,3 @@
-module Cose
+module COSE
   VERSION = "0.1.0"
 end
