@@ -11,7 +11,14 @@ Gem::Specification.new do |spec|
   spec.email         = ["gonzalo@cedarcode.com", "braulio@cedarcode.com"]
 
   spec.summary       = "COSE in ruby"
+  spec.homepage      = "https://github.com/cedarcode/cose-ruby"
   spec.license       = "MIT"
+
+  spec.metadata = {
+    "bug_tracker_uri" => "https://github.com/cedarcode/cose-ruby/issues",
+    "changelog_uri" => "https://github.com/cedarcode/cose-ruby/blob/master/CHANGELOG.md",
+    "source_code_uri" => "https://github.com/cedarcode/cose-ruby"
+  }
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
