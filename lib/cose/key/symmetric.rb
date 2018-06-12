@@ -5,8 +5,6 @@ require "cose/key/base"
 module COSE
   module Key
     class Symmetric < Base
-      KTY_LABEL = 1
-
       K_LABEL = -1
       KTY_SYMMETRIC = 4
 
@@ -21,11 +19,9 @@ module COSE
       end
 
       def self.from_map(map)
-        if map[KTY_LABEL] == KTY_SYMMETRIC
-          new(key_value: map[K_LABEL])
-        else
-          raise "Not a Symmetric key"
-        end
+        enforce_type(map, KTY_SYMMETRIC, "Not a Symmetric key")
+
+        new(key_value: map[K_LABEL])
       end
     end
   end

@@ -5,7 +5,6 @@ require "cose/key/base"
 module COSE
   module Key
     class EC2 < Base
-      KTY_LABEL = 1
       ALG_LABEL = 3
 
       CRV_LABEL = -1
@@ -32,16 +31,14 @@ module COSE
       end
 
       def self.from_map(map)
-        if map[KTY_LABEL] == KTY_EC2
-          new(
-            algorithm: map[ALG_LABEL],
-            curve: map[CRV_LABEL],
-            x_coordinate: map[X_LABEL],
-            y_coordinate: map[Y_LABEL]
-          )
-        else
-          raise "Not an EC2 key"
-        end
+        enforce_type(map, KTY_EC2, "Not an EC2 key")
+
+        new(
+          algorithm: map[ALG_LABEL],
+          curve: map[CRV_LABEL],
+          x_coordinate: map[X_LABEL],
+          y_coordinate: map[Y_LABEL]
+        )
       end
     end
   end
