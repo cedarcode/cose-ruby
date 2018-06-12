@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require "cbor"
+require "cose/key/base"
 
 module COSE
   module Key
-    class EC2
+    class EC2 < Base
       KTY_LABEL = 1
       ALG_LABEL = 3
 
@@ -42,10 +42,6 @@ module COSE
         else
           raise "Not an EC2 key"
         end
-      end
-
-      def self.from_cbor(cbor)
-        from_map(CBOR.decode(cbor))
       end
     end
   end
