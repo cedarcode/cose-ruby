@@ -5,6 +5,7 @@
 ### Added
 
 - Symmetric key object
+- Works with ruby 2.4
 
 ## [v0.1.0] - 2018-06-08
 
