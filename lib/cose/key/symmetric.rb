@@ -10,7 +10,7 @@ module COSE
 
       attr_reader :key_value
 
-      def initialize(key_value: nil)
+      def initialize(key_value:)
         if !key_value
           raise ArgumentError, "Required key value is missing"
         end
