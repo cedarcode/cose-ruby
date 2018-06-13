@@ -1,8 +1,9 @@
-# Cose
+# cose
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/cose`. To experiment with that code, run `bin/console` for an interactive prompt.
+COSE ([RFC 8152](https://tools.ietf.org/html/rfc8152)) in ruby
 
-TODO: Delete this and the text above, and describe your gem
+[![Gem](https://img.shields.io/gem/v/cose.svg?style=flat-square)](https://rubygems.org/gems/cose)
+[![Travis](https://img.shields.io/travis/cedarcode/cose-ruby.svg?style=flat-square)](https://travis-ci.org/cedarcode/cose-ruby)
 
 ## Installation
 
@@ -22,7 +23,41 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### Key Objects
+
+#### EC2
+
+```ruby
+cbor_data = "..."
+
+key = COSE::Key::EC2.from_cbor(cbor_data)
+
+key.curve
+key.x_coordinate
+key.y_coordinate
+```
+
+#### Symmetric
+
+```ruby
+cbor_data = "..."
+
+key = COSE::Key::Symmetric.from_cbor(cbor_data)
+
+key.key_value
+```
+
+### Signing Objects
+
+_Pending_
+
+### MAC Objects
+
+_Pending_
+
+### Encryption Objects
+
+_Pending_
 
 ## Development
 
@@ -32,7 +67,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/cose.
+Bug reports and pull requests are welcome on GitHub at https://github.com/cedarcode/cose-ruby.
 
 ## License
 
