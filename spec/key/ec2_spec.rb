@@ -21,6 +21,19 @@ RSpec.describe COSE::Key::EC2 do
     }.to raise_error(ArgumentError, "Required y-coordinate is missing")
   end
 
+  it "returns an error if key type is wrong" do
+    expect {
+      COSE::Key::EC2.from_cbor(
+        CBOR.encode(
+          1 => 4,
+          -1 => 1,
+          -2 => "x",
+          -3 => "y"
+        )
+      )
+    }.to raise_error("Not an EC2 key")
+  end
+
   it "can decode CBOR" do
     key = COSE::Key::EC2.from_cbor(
       CBOR.encode(

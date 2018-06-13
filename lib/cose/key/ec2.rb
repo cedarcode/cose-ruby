@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
-require "cbor"
+require "cose/key/base"
 
 module COSE
   module Key
-    class EC2
-      KTY_LABEL = 1
+    class EC2 < Base
       ALG_LABEL = 3
 
       CRV_LABEL = -1
@@ -32,20 +31,14 @@ module COSE
       end
 
       def self.from_map(map)
-        if map[KTY_LABEL] == KTY_EC2
-          new(
-            algorithm: map[ALG_LABEL],
-            curve: map[CRV_LABEL],
-            x_coordinate: map[X_LABEL],
-            y_coordinate: map[Y_LABEL]
-          )
-        else
-          raise "Not an EC2 key"
-        end
-      end
+        enforce_type(map, KTY_EC2, "Not an EC2 key")
 
-      def self.from_cbor(cbor)
-        from_map(CBOR.decode(cbor))
+        new(
+          algorithm: map[ALG_LABEL],
+          curve: map[CRV_LABEL],
+          x_coordinate: map[X_LABEL],
+          y_coordinate: map[Y_LABEL]
+        )
       end
     end
   end
