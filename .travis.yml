@@ -2,6 +2,10 @@ sudo: false
 language: ruby
 cache: bundler
 
+os:
+  - linux
+  - osx
+
 rvm:
   - ruby-head
   - 2.7.0-preview1
@@ -17,7 +21,9 @@ gemfile:
   - gemfiles/openssl_2_0.gemfile
   - gemfiles/openssl_default.gemfile
 
-before_install: gem install bundler -v '~> 1.17'
+before_install:
+  - gem install bundler -v '~> 1.17'
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then ./script/setup-osx; else sudo ./script/setup-linux; fi
 
 matrix:
   fast_finish: true
