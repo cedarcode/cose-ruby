@@ -1,11 +1,26 @@
 sudo: false
 language: ruby
+
+os:
+  - linux
+  - osx
+
 rvm:
   - 2.6.0-preview2
   - 2.5.1
   - 2.4.4
-before_install: gem install bundler -v 1.16.2
 
+before_install:
+  - gem install bundler -v 1.16.2
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew tap pjk/libcbor; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libcbor; fi
+
+addons:
+  apt:
+    sources:
+      - sourceline: "ppa:yubico/stable"
+    packages:
+      - libcbor-dev
 matrix:
   fast_finish: true
   allow_failures:

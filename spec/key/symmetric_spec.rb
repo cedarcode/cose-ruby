@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "cbor"
+require "libcbor/all"
 require "cose/key/symmetric"
 
 RSpec.describe COSE::Key::Symmetric do

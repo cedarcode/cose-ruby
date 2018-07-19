@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "cbor"
+require "libcbor/all"
 
 module COSE
   module Key

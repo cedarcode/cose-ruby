@@ -5,6 +5,21 @@ COSE ([RFC 8152](https://tools.ietf.org/html/rfc8152)) in ruby
 [![Gem](https://img.shields.io/gem/v/cose.svg?style=flat-square)](https://rubygems.org/gems/cose)
 [![Travis](https://img.shields.io/travis/cedarcode/cose-ruby.svg?style=flat-square)](https://travis-ci.org/cedarcode/cose-ruby)
 
+## Prerequisites
+
+### OSX
+
+```
+brew tap pjk/libcbor
+brew install libcbor
+```
+
+### Linux (APT)
+
+```
+apt-get install libcbor-dev
+```
+
 ## Installation
 
 Add this line to your application's Gemfile:
