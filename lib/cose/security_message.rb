@@ -14,12 +14,12 @@ module COSE
     def self.deserialize(cbor)
       decoded = CBOR.decode(cbor)
 
-      if decoded.is_a?(CBOR::Tagged)
-        if respond_to?(:tag) && tag != decoded.tag
+      if decoded.is_a?(CBOR::Tag)
+        if respond_to?(:tag) && tag != decoded.value
           raise(COSE::Error, "Invalid CBOR tag")
         end
 
-        decoded = decoded.value
+        decoded = decoded.item
       end
 
       from_array(decoded)

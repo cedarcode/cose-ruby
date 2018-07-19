@@ -17,7 +17,7 @@ RSpec.configure do |config|
 end
 
 def create_security_message(protected_headers, unprotected_headers, *args, cbor_tag: 0)
-  CBOR::Tagged.new(cbor_tag, [CBOR.encode(protected_headers), unprotected_headers, *args]).to_cbor
+  CBOR::Tag.new(cbor_tag, [CBOR.encode(protected_headers), unprotected_headers, *args]).to_cbor
 end
 
 def wg_examples(relative_glob)
