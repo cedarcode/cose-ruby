@@ -12,11 +12,7 @@ rvm:
 
 before_install:
   - gem install bundler -v 1.16.2
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo add-apt-repository ppa:yubico/stable -y; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update -q; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install libcbor-dev -y; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew tap pjk/libcbor; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libcbor; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./script/setup-linux; else ./script/setup-osx; fi
 
 matrix:
   fast_finish: true

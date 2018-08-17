@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -x
+
+if apt-cache show libcbor-dev >> /dev/null; then
+  echo "libcbor-dev is avialable in apt sources";
+else
+  sudo add-apt-repository ppa:yubico/stable -y
+  sudo apt-get update -q
+fi
+
+sudo apt-get install libcbor-dev -y
