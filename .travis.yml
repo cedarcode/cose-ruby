@@ -12,7 +12,7 @@ rvm:
 
 before_install:
   - gem install bundler -v 1.16.2
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./script/setup-linux; else ./script/setup-osx; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo ./script/setup-linux; else ./script/setup-osx; fi
 
 matrix:
   fast_finish: true
