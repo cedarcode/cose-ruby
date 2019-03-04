@@ -35,6 +35,7 @@ key = COSE::Key::EC2.from_cbor(cbor_data)
 key.curve
 key.x_coordinate
 key.y_coordinate
+key.d_coordinate
 ```
 
 #### Symmetric
