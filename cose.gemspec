@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Gonzalo Rodriguez", "Braulio Martinez"]
   spec.email         = ["gonzalo@cedarcode.com", "braulio@cedarcode.com"]
 
-  spec.summary       = "COSE (RFC 8152) in ruby"
+  spec.summary       = "COSE (RFC 8152) ruby library"
   spec.homepage      = "https://github.com/cedarcode/cose-ruby"
   spec.license       = "MIT"
 
