@@ -8,14 +8,15 @@ module COSE
       ALG_LABEL = 3
 
       CRV_LABEL = -1
+      D_LABEL = -4
       X_LABEL = -2
       Y_LABEL = -3
 
       KTY_EC2 = 2
 
-      attr_reader :algorithm, :curve, :x_coordinate, :y_coordinate
+      attr_reader :algorithm, :curve, :d_coordinate, :x_coordinate, :y_coordinate
 
-      def initialize(algorithm: nil, curve:, x_coordinate:, y_coordinate:)
+      def initialize(algorithm: nil, curve:, d_coordinate: nil, x_coordinate:, y_coordinate:)
         if !curve
           raise ArgumentError, "Required curve is missing"
         elsif !x_coordinate
@@ -25,6 +26,7 @@ module COSE
         else
           @algorithm = algorithm
           @curve = curve
+          @d_coordinate = d_coordinate
           @x_coordinate = x_coordinate
           @y_coordinate = y_coordinate
         end
@@ -36,6 +38,7 @@ module COSE
         new(
           algorithm: map[ALG_LABEL],
           curve: map[CRV_LABEL],
+          d_coordinate: map[D_LABEL],
           x_coordinate: map[X_LABEL],
           y_coordinate: map[Y_LABEL]
         )
