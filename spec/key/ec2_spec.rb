@@ -40,12 +40,14 @@ RSpec.describe COSE::Key::EC2 do
         1 => 2,
         -1 => 1,
         -2 => "x",
-        -3 => "y"
+        -3 => "y",
+        -4 => "d",
       )
     )
 
     expect(key.curve).to eq(1)
     expect(key.x_coordinate).to eq("x")
     expect(key.y_coordinate).to eq("y")
+    expect(key.d_coordinate).to eq("d")
   end
 end
