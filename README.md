@@ -50,15 +50,59 @@ key.key_value
 
 ### Signing Objects
 
+#### COSE_Sign
+
 _Pending_
+
+#### COSE_Sign1
+
+```ruby
+cbor_data = "..."
+
+sign1 = COSE::Sign1.from_cbor(cbor_data)
+
+sign1.protected_headers
+sign1.unprotected_headers
+sign1.payload
+sign1.signature
+```
 
 ### MAC Objects
 
+#### COSE_Mac
+
 _Pending_
+
+#### COSE_Mac0
+
+```ruby
+cbor_data = "..."
+
+mac0 = COSE::Mac0.from_cbor(cbor_data)
+
+mac0.protected_headers
+mac0.unprotected_headers
+mac0.payload
+mac0.tag
+```
 
 ### Encryption Objects
 
+#### COSE_Encrypt
+
 _Pending_
+
+#### COSE_Encrypt0
+
+```ruby
+cbor_data = "..."
+
+encrypt0 = COSE::Encrypt0.from_cbor(cbor_data)
+
+encrypt0.protected_headers
+encrypt0.unprotected_headers
+encrypt0.ciphertext
+```
 
 ## Development
 
