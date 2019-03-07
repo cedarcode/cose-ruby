@@ -1,8 +1,9 @@
 require "cbor"
+require "cose/security_message"
 
 module COSE
-  class Sign1
-    attr_reader :protected_headers, :unprotected_headers, :payload, :signature
+  class Sign1 < SecurityMessage
+    attr_reader :payload, :signature
 
     def self.from_cbor(cbor)
       decoded = CBOR.decode(cbor)
@@ -15,11 +16,11 @@ module COSE
       )
     end
 
-    def initialize(protected_headers:, unprotected_headers:, payload:, signature:)
-      @protected_headers = protected_headers
-      @unprotected_headers = unprotected_headers
-      @payload = payload
-      @signature = signature
+    def initialize(**keyword_arguments)
+      @signature = keyword_arguments.delete(:signature)
+      @payload = keyword_arguments.delete(:payload)
+
+      super(**keyword_arguments)
     end
   end
 end

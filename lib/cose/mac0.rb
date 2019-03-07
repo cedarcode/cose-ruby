@@ -1,6 +1,8 @@
+require "cose/security_message"
+
 module COSE
-  class Mac0
-    attr_reader :protected_headers, :unprotected_headers, :payload, :tag
+  class Mac0 < SecurityMessage
+    attr_reader :payload, :tag
 
     def self.from_cbor(cbor)
       decoded = CBOR.decode(cbor)
@@ -13,11 +15,11 @@ module COSE
       )
     end
 
-    def initialize(protected_headers:, unprotected_headers:, payload:, tag:)
-      @protected_headers = protected_headers
-      @unprotected_headers = unprotected_headers
-      @payload = payload
-      @tag = tag
+    def initialize(**keyword_arguments)
+      @tag = keyword_arguments.delete(:tag)
+      @payload = keyword_arguments.delete(:payload)
+
+      super(**keyword_arguments)
     end
   end
 end
