@@ -10,10 +10,10 @@ module COSE
       new(protected_headers: CBOR.decode(decoded[0]), unprotected_headers: decoded[1], ciphertext: decoded[2])
     end
 
-    def initialize(**keyword_arguments)
-      @ciphertext = keyword_arguments.delete(:ciphertext)
-
+    def initialize(ciphertext:, **keyword_arguments)
       super(**keyword_arguments)
+
+      @ciphertext = ciphertext
     end
   end
 end

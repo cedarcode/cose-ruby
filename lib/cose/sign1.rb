@@ -16,11 +16,11 @@ module COSE
       )
     end
 
-    def initialize(**keyword_arguments)
-      @signature = keyword_arguments.delete(:signature)
-      @payload = keyword_arguments.delete(:payload)
-
+    def initialize(payload:, signature:, **keyword_arguments)
       super(**keyword_arguments)
+
+      @payload = payload
+      @signature = signature
     end
   end
 end

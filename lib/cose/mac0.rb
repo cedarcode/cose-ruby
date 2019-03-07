@@ -15,11 +15,11 @@ module COSE
       )
     end
 
-    def initialize(**keyword_arguments)
-      @tag = keyword_arguments.delete(:tag)
-      @payload = keyword_arguments.delete(:payload)
-
+    def initialize(payload:, tag:, **keyword_arguments)
       super(**keyword_arguments)
+
+      @payload = payload
+      @tag = tag
     end
   end
 end
