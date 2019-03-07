@@ -4,11 +4,11 @@ require "cbor"
 require "cose/mac0"
 
 RSpec.describe "COSE::Mac0" do
-  context ".from_cbor" do
+  context ".deserialize" do
     before do
       cbor = CBOR.encode([CBOR.encode(1 => 15), {}, CBOR.encode("This is the content"), "tag".b])
 
-      @mac0 = COSE::Mac0.from_cbor(cbor)
+      @mac0 = COSE::Mac0.deserialize(cbor)
     end
 
     it "returns protected headers" do

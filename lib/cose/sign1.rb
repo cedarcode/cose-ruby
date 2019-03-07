@@ -5,7 +5,7 @@ module COSE
   class Sign1 < SecurityMessage
     attr_reader :payload, :signature
 
-    def self.from_cbor(cbor)
+    def self.deserialize(cbor)
       decoded = CBOR.decode(cbor)
 
       new(

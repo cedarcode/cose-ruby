@@ -4,11 +4,11 @@ require "cbor"
 require "cose/encrypt0"
 
 RSpec.describe "COSE::Encrypt0" do
-  context ".from_cbor" do
+  context ".deserialize" do
     before do
       cbor = CBOR.encode([CBOR.encode(1 => 10), { 5 => "init-vector".b }, "ciphertext".b])
 
-      @encrypt0 = COSE::Encrypt0.from_cbor(cbor)
+      @encrypt0 = COSE::Encrypt0.deserialize(cbor)
     end
 
     it "returns protected headers" do

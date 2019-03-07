@@ -4,7 +4,7 @@ module COSE
   class Mac0 < SecurityMessage
     attr_reader :payload, :tag
 
-    def self.from_cbor(cbor)
+    def self.deserialize(cbor)
       decoded = CBOR.decode(cbor)
 
       new(

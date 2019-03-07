@@ -59,7 +59,7 @@ _Pending_
 ```ruby
 cbor_data = "..."
 
-sign1 = COSE::Sign1.from_cbor(cbor_data)
+sign1 = COSE::Sign1.deserialize(cbor_data)
 
 sign1.protected_headers
 sign1.unprotected_headers
@@ -78,7 +78,7 @@ _Pending_
 ```ruby
 cbor_data = "..."
 
-mac0 = COSE::Mac0.from_cbor(cbor_data)
+mac0 = COSE::Mac0.deserialize(cbor_data)
 
 mac0.protected_headers
 mac0.unprotected_headers
@@ -97,7 +97,7 @@ _Pending_
 ```ruby
 cbor_data = "..."
 
-encrypt0 = COSE::Encrypt0.from_cbor(cbor_data)
+encrypt0 = COSE::Encrypt0.deserialize(cbor_data)
 
 encrypt0.protected_headers
 encrypt0.unprotected_headers
