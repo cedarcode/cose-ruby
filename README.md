@@ -52,7 +52,21 @@ key.key_value
 
 #### COSE_Sign
 
-_Pending_
+```ruby
+cbor_data = "..."
+
+sign = COSE::Sign.deserialize(cbor_data)
+
+sign.protected_headers
+sign.unprotected_headers
+sign.payload
+
+sign.signatures.each do |signature|
+  signature.protected_headers
+  signature.unprotected_headers
+  signature.signature
+end
+```
 
 #### COSE_Sign1
 
@@ -71,7 +85,30 @@ sign1.signature
 
 #### COSE_Mac
 
-_Pending_
+```ruby
+cbor_data = "..."
+
+mac = COSE::Mac.deserialize(cbor_data)
+
+mac.protected_headers
+mac.unprotected_headers
+mac.payload
+mac.tag
+
+mac.recipients.each do |recipient|
+  recipient.protected_headers
+  recipient.unprotected_headers
+  recipient.ciphertext
+
+  if recipient.recipients
+    recipient.recipients.each do |recipient|
+      recipient.protected_headers
+      recipient.unprotected_headers
+      recipient.ciphertext
+    end
+  end
+end
+```
 
 #### COSE_Mac0
 
@@ -90,7 +127,29 @@ mac0.tag
 
 #### COSE_Encrypt
 
-_Pending_
+```ruby
+cbor_data = "..."
+
+encrypt = COSE::Encrypt.deserialize(cbor_data)
+
+encrypt.protected_headers
+encrypt.unprotected_headers
+encrypt.ciphertext
+
+encrypt.recipients.each do |recipient|
+  recipient.protected_headers
+  recipient.unprotected_headers
+  recipient.ciphertext
+
+  if recipient.recipients
+    recipient.recipients.each do |recipient|
+      recipient.protected_headers
+      recipient.unprotected_headers
+      recipient.ciphertext
+    end
+  end
+end
+```
 
 #### COSE_Encrypt0
 
