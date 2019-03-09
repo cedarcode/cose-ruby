@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "bundler/setup"
+require "cbor"
 require "cose"
 require "byebug"
 
@@ -14,4 +15,8 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+end
+
+def create_security_message(protected_headers, unprotected_headers, *args)
+  CBOR::Tagged.new(0, [CBOR.encode(protected_headers), unprotected_headers, *args]).to_cbor
 end

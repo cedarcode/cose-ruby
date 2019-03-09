@@ -50,15 +50,118 @@ key.key_value
 
 ### Signing Objects
 
-_Pending_
+#### COSE_Sign
+
+```ruby
+cbor_data = "..."
+
+sign = COSE::Sign.deserialize(cbor_data)
+
+sign.protected_headers
+sign.unprotected_headers
+sign.payload
+
+sign.signatures.each do |signature|
+  signature.protected_headers
+  signature.unprotected_headers
+  signature.signature
+end
+```
+
+#### COSE_Sign1
+
+```ruby
+cbor_data = "..."
+
+sign1 = COSE::Sign1.deserialize(cbor_data)
+
+sign1.protected_headers
+sign1.unprotected_headers
+sign1.payload
+sign1.signature
+```
 
 ### MAC Objects
 
-_Pending_
+#### COSE_Mac
+
+```ruby
+cbor_data = "..."
+
+mac = COSE::Mac.deserialize(cbor_data)
+
+mac.protected_headers
+mac.unprotected_headers
+mac.payload
+mac.tag
+
+mac.recipients.each do |recipient|
+  recipient.protected_headers
+  recipient.unprotected_headers
+  recipient.ciphertext
+
+  if recipient.recipients
+    recipient.recipients.each do |recipient|
+      recipient.protected_headers
+      recipient.unprotected_headers
+      recipient.ciphertext
+    end
+  end
+end
+```
+
+#### COSE_Mac0
+
+```ruby
+cbor_data = "..."
+
+mac0 = COSE::Mac0.deserialize(cbor_data)
+
+mac0.protected_headers
+mac0.unprotected_headers
+mac0.payload
+mac0.tag
+```
 
 ### Encryption Objects
 
-_Pending_
+#### COSE_Encrypt
+
+```ruby
+cbor_data = "..."
+
+encrypt = COSE::Encrypt.deserialize(cbor_data)
+
+encrypt.protected_headers
+encrypt.unprotected_headers
+encrypt.ciphertext
+
+encrypt.recipients.each do |recipient|
+  recipient.protected_headers
+  recipient.unprotected_headers
+  recipient.ciphertext
+
+  if recipient.recipients
+    recipient.recipients.each do |recipient|
+      recipient.protected_headers
+      recipient.unprotected_headers
+      recipient.ciphertext
+    end
+  end
+end
+```
+
+#### COSE_Encrypt0
+
+```ruby
+cbor_data = "..."
+
+encrypt0 = COSE::Encrypt0.deserialize(cbor_data)
+
+encrypt0.protected_headers
+encrypt0.unprotected_headers
+encrypt0.ciphertext
+```
 
 ## Development
 
