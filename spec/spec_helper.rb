@@ -17,5 +17,5 @@ RSpec.configure do |config|
 end
 
 def create_security_message(protected_headers, unprotected_headers, *args)
-  CBOR.encode([CBOR.encode(protected_headers), unprotected_headers, *args])
+  CBOR::Tagged.new(0, [CBOR.encode(protected_headers), unprotected_headers, *args]).to_cbor
 end

@@ -7,6 +7,10 @@ module COSE
     def self.deserialize(cbor)
       decoded = CBOR.decode(cbor)
 
+      if decoded.respond_to?(:value)
+        decoded = decoded.value
+      end
+
       new(
         protected_headers: CBOR.decode(decoded[0]),
         unprotected_headers: decoded[1],
