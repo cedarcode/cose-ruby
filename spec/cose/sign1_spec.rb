@@ -6,7 +6,7 @@ require "cose/sign1"
 RSpec.describe "COSE::Sign1" do
   context ".deserialize" do
     before do
-      cbor = CBOR.encode([CBOR.encode(1 => -7), { 4 => "11" }, CBOR.encode("This is the content"), "signature".b])
+      cbor = create_security_message({ 1 => -7 }, { 4 => "11" }, CBOR.encode("This is the content"), "signature".b)
 
       @sign1 = COSE::Sign1.deserialize(cbor)
     end

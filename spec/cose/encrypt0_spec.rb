@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
-require "cbor"
 require "cose/encrypt0"
 
 RSpec.describe "COSE::Encrypt0" do
   context ".deserialize" do
     before do
-      cbor = CBOR.encode([CBOR.encode(1 => 10), { 5 => "init-vector".b }, "ciphertext".b])
+      cbor = create_security_message({ 1 => 10 }, { 5 => "init-vector".b }, "ciphertext".b)
 
       @encrypt0 = COSE::Encrypt0.deserialize(cbor)
     end

@@ -6,7 +6,7 @@ require "cose/mac0"
 RSpec.describe "COSE::Mac0" do
   context ".deserialize" do
     before do
-      cbor = CBOR.encode([CBOR.encode(1 => 15), {}, CBOR.encode("This is the content"), "tag".b])
+      cbor = create_security_message({ 1 => 15 }, {}, CBOR.encode("This is the content"), "tag".b)
 
       @mac0 = COSE::Mac0.deserialize(cbor)
     end

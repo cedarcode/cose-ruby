@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
-require "cbor"
 require "cose/signature"
 
 RSpec.describe "COSE::Signature" do
   context ".deserialize" do
     before do
-      cbor = CBOR.encode([CBOR.encode(1 => 2), { 3 => 4 }, "signature".b])
+      cbor = create_security_message({ 1 => 2 }, { 3 => 4 }, "signature".b)
 
       @signature = COSE::Signature.deserialize(cbor)
     end

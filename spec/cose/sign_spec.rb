@@ -7,15 +7,13 @@ require "cose/signature"
 RSpec.describe "COSE::Sign" do
   context ".deserialize" do
     before do
-      cbor = CBOR.encode(
+      cbor = create_security_message(
+        { 1 => 2 },
+        { 3 => 4 },
+        CBOR.encode("This is the content"),
         [
-          CBOR.encode(1 => 2),
-          { 3 => 4 },
-          CBOR.encode("This is the content"),
-          [
-            CBOR.encode([CBOR.encode(5 => 6), { 7 => 8 }, "signatureA".b]),
-            CBOR.encode([CBOR.encode(9 => 10), { 11 => 12 }, "signatureB".b])
-          ]
+          create_security_message({ 5 => 6 }, { 7 => 8 }, "signatureA".b),
+          create_security_message({ 9 => 10 }, { 11 => 12 }, "signatureB".b)
         ]
       )
 

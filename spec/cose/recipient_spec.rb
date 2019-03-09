@@ -1,20 +1,17 @@
 # frozen_string_literal: true
 
-require "cbor"
 require "cose/recipient"
 
 RSpec.describe "COSE::Recipient" do
   context ".deserialize" do
     before do
-      cbor = CBOR.encode(
+      cbor = create_security_message(
+        { 1 => 2 },
+        { 3 => 4 },
+        "ciphertext".b,
         [
-          CBOR.encode(1 => 2),
-          { 3 => 4 },
-          "ciphertext".b,
-          [
-            CBOR.encode([CBOR.encode(5 => 6), { 6 => 7 }, "ciphertextA".b]),
-            CBOR.encode([CBOR.encode(8 => 9), { 10 => 11 }, "ciphertextB".b])
-          ]
+          create_security_message({ 5 => 6 }, { 6 => 7 }, "ciphertextA".b),
+          create_security_message({ 8 => 9 }, { 10 => 11 }, "ciphertextB".b)
         ]
       )
 
