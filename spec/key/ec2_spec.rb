@@ -23,7 +23,7 @@ RSpec.describe COSE::Key::EC2 do
 
   it "returns an error if key type is wrong" do
     expect {
-      COSE::Key::EC2.from_cbor(
+      COSE::Key::EC2.deserialize(
         CBOR.encode(
           1 => 4,
           -1 => 1,
@@ -35,7 +35,7 @@ RSpec.describe COSE::Key::EC2 do
   end
 
   it "can decode CBOR" do
-    key = COSE::Key::EC2.from_cbor(
+    key = COSE::Key::EC2.deserialize(
       CBOR.encode(
         1 => 2,
         -1 => 1,
