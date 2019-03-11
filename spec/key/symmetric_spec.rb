@@ -12,7 +12,7 @@ RSpec.describe COSE::Key::Symmetric do
 
   it "returns an error if key type is wrong" do
     expect {
-      COSE::Key::Symmetric.from_cbor(
+      COSE::Key::Symmetric.deserialize(
         CBOR.encode(
           1 => 2,
           -1 => "k"
@@ -22,7 +22,7 @@ RSpec.describe COSE::Key::Symmetric do
   end
 
   it "can decode CBOR" do
-    key = COSE::Key::Symmetric.from_cbor(
+    key = COSE::Key::Symmetric.deserialize(
       CBOR.encode(
         1 => 4,
         -1 => "k"

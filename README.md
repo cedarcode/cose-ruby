@@ -30,7 +30,7 @@ Or install it yourself as:
 ```ruby
 cbor_data = "..."
 
-key = COSE::Key::EC2.from_cbor(cbor_data)
+key = COSE::Key::EC2.deserialize(cbor_data)
 
 key.curve
 key.x_coordinate
@@ -43,7 +43,7 @@ key.d_coordinate
 ```ruby
 cbor_data = "..."
 
-key = COSE::Key::Symmetric.from_cbor(cbor_data)
+key = COSE::Key::Symmetric.deserialize(cbor_data)
 
 key.key_value
 ```
@@ -53,7 +53,7 @@ key.key_value
 ```ruby
 cbor_data = "..."
 
-key = COSE::Key::RSA.from_cbor(cbor_data)
+key = COSE::Key::RSA.deserialize(cbor_data)
 
 key.modulus_n
 key.public_exponent_e

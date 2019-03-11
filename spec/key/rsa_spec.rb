@@ -17,7 +17,7 @@ RSpec.describe COSE::Key::RSA do
 
   it "returns an error if key type is wrong" do
     expect {
-      COSE::Key::RSA.from_cbor(
+      COSE::Key::RSA.deserialize(
         CBOR.encode(
           1 => 4,
           -1 => "n",
@@ -28,7 +28,7 @@ RSpec.describe COSE::Key::RSA do
   end
 
   it "can decode CBOR" do
-    key = COSE::Key::RSA.from_cbor(
+    key = COSE::Key::RSA.deserialize(
       CBOR.encode(
         1 => 3,
         -1 => "n",

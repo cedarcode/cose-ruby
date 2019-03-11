@@ -7,7 +7,7 @@ module COSE
     class Base
       KTY_LABEL = 1
 
-      def self.from_cbor(cbor)
+      def self.deserialize(cbor)
         from_map(CBOR.decode(cbor))
       end
 
