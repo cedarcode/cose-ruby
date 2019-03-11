@@ -48,6 +48,17 @@ key = COSE::Key::Symmetric.deserialize(cbor_data)
 key.key_value
 ```
 
+#### RSA
+
+```ruby
+cbor_data = "..."
+
+key = COSE::Key::RSA.deserialize(cbor_data)
+
+key.modulus_n
+key.public_exponent_e
+```
+
 ### Signing Objects
 
 #### COSE_Sign
