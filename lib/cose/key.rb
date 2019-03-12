@@ -4,7 +4,7 @@ require "cose/key/rsa"
 require "cose/key/symmetric"
 
 module COSE
-  class UnknownKeyFormat < StandardError; end
+  class UnknownKeyType < StandardError; end
 
   module Key
     LABEL_KTY = 1
@@ -20,7 +20,7 @@ module COSE
       when COSE::Key::Symmetric::KTY_SYMMETRIC
         COSE::Key::Symmetric.from_map(map)
       else
-        raise UnknownKeyFormat
+        raise UnknownKeyType, "Unsupported or unknown key type #{map[LABEL_KTY]}"
       end
     end
   end

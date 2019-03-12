@@ -14,7 +14,7 @@ RSpec.describe COSE::Key do
             -2 => "b"
           )
         )
-      }.to raise_error(COSE::UnknownKeyFormat)
+      }.to raise_error(COSE::UnknownKeyType, "Unsupported or unknown key type 100")
     end
 
     it "deserializes EC2" do
