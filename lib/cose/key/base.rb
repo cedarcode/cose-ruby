@@ -5,6 +5,8 @@ require "cbor"
 module COSE
   module Key
     class Base
+      LABEL_KTY = 1
+
       def self.deserialize(cbor)
         from_map(CBOR.decode(cbor))
       end
