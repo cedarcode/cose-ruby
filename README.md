@@ -25,6 +25,25 @@ Or install it yourself as:
 
 ### Key Objects
 
+```ruby
+cbor_data = "..."
+
+key = COSE::Key.deserialize(cbor_data)
+
+case key.class
+when COSE::Key::EC2
+  key.curve
+  key.x_coordinate
+  key.y_coordinate
+  key.d_coordinate
+when COSE::Key::RSA
+  key.modulus_n
+  key.public_exponent_e
+when COSE::Key::Symmetric
+  key.key_value
+end
+```
+
 #### EC2
 
 ```ruby
