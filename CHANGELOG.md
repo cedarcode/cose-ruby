@@ -1,5 +1,16 @@
 # Changelog
 
+## [v0.4.0] - 2019-03-12
+
+### Added
+
+- RSA public key deserialization
+- Key type-agnostic deserialization
+
+### Changed
+
+- Keys `.from_cbor` methods changed to `.deserialize`
+
 ## [v0.3.0] - 2019-03-09
 
 ### Added
@@ -28,6 +39,7 @@
 - EC2 key object
 - Works with ruby 2.5
 
+[v0.4.0]: https://github.com/cedarcode/cose-ruby/compare/v0.3.0...v0.4.0/
 [v0.3.0]: https://github.com/cedarcode/cose-ruby/compare/v0.2.0...v0.3.0/
 [v0.2.0]: https://github.com/cedarcode/cose-ruby/compare/v0.1.0...v0.2.0/
 [v0.1.0]: https://github.com/cedarcode/cose-ruby/compare/5725d9b5db978f19a21bd59182f092d31a118eff...v0.1.0/
