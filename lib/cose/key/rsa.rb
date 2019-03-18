@@ -38,9 +38,27 @@ module COSE
         new(attributes)
       end
 
-      attr_reader :modulus_n, :public_exponent_e, :private_exponent_d, :prime_factor_p, :prime_factor_q, :d_p, :d_q, :q_inv
+      attr_reader(
+        :modulus_n,
+        :public_exponent_e,
+        :private_exponent_d,
+        :prime_factor_p,
+        :prime_factor_q,
+        :d_p,
+        :d_q,
+        :q_inv
+      )
 
-      def initialize(modulus_n:, public_exponent_e:, private_exponent_d: nil, prime_factor_p: nil, prime_factor_q: nil, d_p: nil, d_q: nil, q_inv: nil)
+      def initialize(
+        modulus_n:,
+        public_exponent_e:,
+        private_exponent_d: nil,
+        prime_factor_p: nil,
+        prime_factor_q: nil,
+        d_p: nil,
+        d_q: nil,
+        q_inv: nil
+      )
         if !modulus_n
           raise ArgumentError, "Required modulus_n is missing"
         elsif !public_exponent_e
