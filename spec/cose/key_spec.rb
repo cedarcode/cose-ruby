@@ -2,8 +2,65 @@
 
 require "cbor"
 require "cose/key"
+require "openssl"
 
 RSpec.describe COSE::Key do
+  describe ".serialize" do
+    it "can serialize EC P-256 key" do
+      key = OpenSSL::PKey::EC.new("prime256v1").generate_key
+
+      cbor = COSE::Key.serialize(key)
+      map = CBOR.decode(cbor)
+
+      expect(map[1]).to eq(2)
+      expect(map[-1]).to eq(1)
+      expect(map[-2]).to be_truthy
+      expect(map[-3]).to be_truthy
+      expect(map[-4]).to be_truthy
+    end
+
+    it "can serialize EC P-256 public key" do
+      key = OpenSSL::PKey::EC.new("prime256v1").generate_key.public_key
+
+      cbor = COSE::Key.serialize(key)
+      map = CBOR.decode(cbor)
+
+      expect(map[1]).to eq(2)
+      expect(map[-1]).to eq(1)
+      expect(map[-2]).to be_truthy
+      expect(map[-3]).to be_truthy
+      expect(map[-4]).to be_nil
+    end
+
+    it "can serialize RSA key" do
+      key = OpenSSL::PKey::RSA.new(2048)
+
+      cbor = COSE::Key.serialize(key)
+      map = CBOR.decode(cbor)
+
+      expect(map[1]).to eq(3)
+      expect(map[-1]).to be_truthy
+      expect(map[-2]).to be_truthy
+      expect(map[-3]).to be_truthy
+      expect(map[-4]).to be_truthy
+      expect(map[-5]).to be_truthy
+      expect(map[-6]).to be_truthy
+      expect(map[-7]).to be_truthy
+      expect(map[-8]).to be_truthy
+    end
+
+    it "can serialize RSA public key" do
+      key = OpenSSL::PKey::RSA.new(2048).public_key
+
+      cbor = COSE::Key.serialize(key)
+      map = CBOR.decode(cbor)
+
+      expect(map[1]).to eq(3)
+      expect(map[-1]).to be_truthy
+      expect(map[-2]).to be_truthy
+    end
+  end
+
   describe ".deserialize" do
     it "returns error if unknown format" do
       expect {
