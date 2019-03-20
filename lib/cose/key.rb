@@ -2,11 +2,23 @@ require "cbor"
 require "cose/key/ec2"
 require "cose/key/rsa"
 require "cose/key/symmetric"
+require "openssl"
 
 module COSE
   class UnknownKeyType < StandardError; end
 
   module Key
+    def self.serialize(pkey)
+      case pkey
+      when OpenSSL::PKey::EC, OpenSSL::PKey::EC::Point
+        COSE::Key::EC2.from_pkey(pkey).serialize
+      when OpenSSL::PKey::RSA
+        COSE::Key::RSA.from_pkey(pkey).serialize
+      else
+        raise "Unsupported serialization of #{pkey.class} object"
+      end
+    end
+
     def self.deserialize(data)
       map = CBOR.decode(data)
 
