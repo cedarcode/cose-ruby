@@ -15,8 +15,14 @@ module COSE
 
       KTY_EC2 = 2
       CRV_P256 = 1
+      CRV_P384 = 2
+      CRV_P521 = 3
 
-      PKEY_CURVES = { CRV_P256 => "prime256v1" }.freeze
+      PKEY_CURVES = {
+        CRV_P256 => "prime256v1",
+        CRV_P384 => "secp384r1",
+        CRV_P521 => "secp521r1"
+      }.freeze
 
       def self.from_pkey(pkey)
         curve = PKEY_CURVES.key(pkey.group.curve_name) || raise("Unsupported EC curve #{pkey.group.curve_name}")
@@ -66,7 +72,7 @@ module COSE
       def serialize
         CBOR.encode(
           Base::LABEL_KTY => KTY_EC2,
-          CRV_LABEL => CRV_P256,
+          CRV_LABEL => curve,
           X_LABEL => x_coordinate,
           Y_LABEL => y_coordinate,
           D_LABEL => d_coordinate
