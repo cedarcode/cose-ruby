@@ -33,6 +33,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "cbor", "~> 0.5.9.2"
 
+  spec.add_development_dependency "appraisal", "~> 2.2.0"
   spec.add_development_dependency "bundler", ">= 1.17", "< 3"
   spec.add_development_dependency "byebug", "~> 11.0"
   spec.add_development_dependency "rake", "~> 12.3"
