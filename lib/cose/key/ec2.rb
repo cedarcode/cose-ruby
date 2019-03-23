@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "cose/key/base"
+require "openssl"
 
 module COSE
   module Key
@@ -15,13 +16,10 @@ module COSE
       KTY_EC2 = 2
       CRV_P256 = 1
 
+      PKEY_CURVES = { CRV_P256 => "prime256v1" }.freeze
+
       def self.from_pkey(pkey)
-        curve =
-          if pkey.group.curve_name == "prime256v1"
-            CRV_P256
-          else
-            raise "Unsupported EC curve"
-          end
+        curve = PKEY_CURVES.key(pkey.group.curve_name) || raise("Unsupported EC curve #{pkey.group.curve_name}")
 
         case pkey
         when OpenSSL::PKey::EC::Point
@@ -73,6 +71,24 @@ module COSE
           Y_LABEL => y_coordinate,
           D_LABEL => d_coordinate
         )
+      end
+
+      def to_pkey
+        if PKEY_CURVES[curve]
+          group = OpenSSL::PKey::EC::Group.new(PKEY_CURVES[curve])
+          pkey = OpenSSL::PKey::EC.new(group)
+          public_key_bn = OpenSSL::BN.new("\x04" + x_coordinate + y_coordinate, 2)
+          public_key_point = OpenSSL::PKey::EC::Point.new(group, public_key_bn)
+          pkey.public_key = public_key_point
+
+          if d_coordinate
+            pkey.private_key = OpenSSL::BN.new(d_coordinate, 2)
+          end
+
+          pkey
+        else
+          raise "Unsupported curve #{curve}"
+        end
       end
 
       def self.from_map(map)
