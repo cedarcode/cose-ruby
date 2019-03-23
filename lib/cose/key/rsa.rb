@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "cose/key/base"
+require "openssl"
 
 module COSE
   module Key
@@ -89,10 +90,26 @@ module COSE
         )
       end
 
+      def to_pkey
+        pkey = OpenSSL::PKey::RSA.new
+
+        pkey.set_key(bn(modulus_n), bn(public_exponent_e), bn(private_exponent_d))
+        pkey.set_factors(bn(prime_factor_p), bn(prime_factor_q))
+        pkey.set_crt_params(bn(d_p), bn(d_q), bn(q_inv))
+
+        pkey
+      end
+
       def self.from_map(map)
         enforce_type(map, KTY_RSA, "Not an RSA key")
 
         new(modulus_n: map[LABEL_N], public_exponent_e: map[LABEL_E])
+      end
+
+      private
+
+      def bn(data)
+        OpenSSL::BN.new(data, 2)
       end
     end
   end
