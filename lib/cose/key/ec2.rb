@@ -38,10 +38,12 @@ module COSE
         end
 
         if public_key
-          bytes = public_key.to_bn.to_s(2)
+          bytes = public_key.to_bn.to_s(2)[1..-1]
 
-          x_coordinate = bytes[1..32]
-          y_coordinate = bytes[33..64]
+          coordinate_length = bytes.size / 2
+
+          x_coordinate = bytes[0..(coordinate_length - 1)]
+          y_coordinate = bytes[coordinate_length..-1]
         end
 
         if private_key
