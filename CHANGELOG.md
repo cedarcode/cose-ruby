@@ -1,5 +1,14 @@
 # Changelog
 
+## [v0.5.0] - 2019-03-25
+
+### Added
+
+- `COSE::Key.serialize(openssl_pkey)` serializes an `OpenSSL::PKey::PKey` object into CBOR data. Supports RSA keys plus
+ EC keys from curves prime256v1, secp384r1 and secp521r1.
+- `COSE::Key::EC2#to_pkey` converts to an `OpenSSL::PKey::EC` object
+- `COSE::Key::RSA#to_pkey` converts to an `OpenSSL::PKey::RSA` object
+
 ## [v0.4.1] - 2019-03-12
 
 ### Fixed
@@ -45,6 +54,7 @@
 - EC2 key object
 - Works with ruby 2.5
 
+[v0.5.0]: https://github.com/cedarcode/cose-ruby/compare/v0.4.1...v0.5.0/
 [v0.4.1]: https://github.com/cedarcode/cose-ruby/compare/v0.4.0...v0.4.1/
 [v0.4.0]: https://github.com/cedarcode/cose-ruby/compare/v0.3.0...v0.4.0/
 [v0.3.0]: https://github.com/cedarcode/cose-ruby/compare/v0.2.0...v0.3.0/
