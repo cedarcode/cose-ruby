@@ -25,12 +25,23 @@ Or install it yourself as:
 
 ### Key Objects
 
+#### Deserialization (from CBOR to Ruby objects)
+
 ```ruby
 cbor_data = "..."
 
-key = COSE::Key.deserialize(cbor_data)
+cose_key = COSE::Key.deserialize(cbor_data)
+```
 
-case key.class
+Once you have a `COSE::Key` instance you can either access key parameters directly and/or convert it to an
+`OpenSSL::PKey::PKey` instance for operating with it (encrypting/decrypting, signing/verifying, etc).
+
+```ruby
+# Convert to an OpenSSL::PKey::PKey
+openssl_pkey = cose_key.to_pkey
+
+# Access COSE key parameters
+case key
 when COSE::Key::EC2
   key.curve
   key.x_coordinate
@@ -39,43 +50,73 @@ when COSE::Key::EC2
 when COSE::Key::RSA
   key.modulus_n
   key.public_exponent_e
+  key.private_exponent_d
+  key.prime_factor_p
+  key.prime_factor_q
+  key.d_p
+  key.d_q
+  key.q_inv
 when COSE::Key::Symmetric
   key.key_value
 end
 ```
 
-#### EC2
+If you already know which COSE key type is encoded in the CBOR data, then:
 
 ```ruby
-cbor_data = "..."
+ec2_key_cbor = "..."
 
-key = COSE::Key::EC2.deserialize(cbor_data)
+cose_ec2_key = COSE::Key::EC2.deserialize(ec2_key_cbor)
 
-key.curve
-key.x_coordinate
-key.y_coordinate
-key.d_coordinate
+cose_ec2_key.curve
+cose_ec2_key.x_coordinate
+cose_ec2_key.y_coordinate
+cose_ec2_key.d_coordinate
+
+# or
+
+ec_pkey = cose_ec2_key.to_pkey # Instance of an OpenSSL::PKey::EC
 ```
 
-#### Symmetric
-
 ```ruby
-cbor_data = "..."
+symmetric_key_cbor = "..."
 
-key = COSE::Key::Symmetric.deserialize(cbor_data)
+cose_symmetric_key = COSE::Key::Symmetric.deserialize(symmetric_key_cbor)
 
-key.key_value
+cose_symmetric_key.key_value
 ```
 
-#### RSA
+```ruby
+rsa_key_cbor = "..."
+
+cose_rsa_key = COSE::Key::RSA.deserialize(rsa_key_cbor)
+
+cose_rsa_key.modulus_n
+cose_rsa_key.public_exponent_e
+cose_rsa_key.private_exponent_d
+cose_rsa_key.prime_factor_p
+cose_rsa_key.prime_factor_q
+cose_rsa_key.d_p
+cose_rsa_key.d_q
+cose_rsa_key.q_inv
+
+# or
+
+rsa_pkey = cose_rsa_key.to_pkey # Instance of an OpenSSL::PKey::RSA
+```
+
+#### Serialization (from Ruby objects to CBOR)
 
 ```ruby
-cbor_data = "..."
+ec_pkey = OpenSSL::PKey::EC.new("prime256v1").generate_key
 
-key = COSE::Key::RSA.deserialize(cbor_data)
+cose_ec2_key_cbor = COSE::Key.serialize(ec_pkey)
+```
 
-key.modulus_n
-key.public_exponent_e
+```ruby
+rsa_pkey = OpenSSL::PKey::RSA.new(2048)
+
+cose_rsa_key_cbor = COSE::Key.serialize(rsa_pkey)
 ```
 
 ### Signing Objects
