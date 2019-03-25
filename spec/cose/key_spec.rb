@@ -19,17 +19,30 @@ RSpec.describe COSE::Key do
       expect(map[-4]).to be_truthy
     end
 
-    it "can serialize EC P-256 public key" do
-      key = OpenSSL::PKey::EC.new("prime256v1").generate_key.public_key
+    it "can serialize EC P-384 key" do
+      key = OpenSSL::PKey::EC.new("secp384r1").generate_key
 
       cbor = COSE::Key.serialize(key)
       map = CBOR.decode(cbor)
 
       expect(map[1]).to eq(2)
-      expect(map[-1]).to eq(1)
+      expect(map[-1]).to eq(2)
       expect(map[-2]).to be_truthy
       expect(map[-3]).to be_truthy
-      expect(map[-4]).to be_nil
+      expect(map[-4]).to be_truthy
+    end
+
+    it "can serialize EC P-521 key" do
+      key = OpenSSL::PKey::EC.new("secp521r1").generate_key
+
+      cbor = COSE::Key.serialize(key)
+      map = CBOR.decode(cbor)
+
+      expect(map[1]).to eq(2)
+      expect(map[-1]).to eq(3)
+      expect(map[-2]).to be_truthy
+      expect(map[-3]).to be_truthy
+      expect(map[-4]).to be_truthy
     end
 
     it "can serialize RSA key" do
