@@ -14,9 +14,10 @@ RSpec.describe COSE::Key do
 
       expect(map[1]).to eq(2)
       expect(map[-1]).to eq(1)
-      expect(map[-2]).to be_truthy
-      expect(map[-3]).to be_truthy
-      expect(map[-4]).to be_truthy
+      public_key_bytes = key.public_key.to_bn.to_s(2)[1..-1]
+      expect(map[-2]).to eq(public_key_bytes[0..31])
+      expect(map[-3]).to eq(public_key_bytes[32..-1])
+      expect(map[-4]).to eq(key.private_key.to_s(2))
     end
 
     it "can serialize EC P-384 key" do
@@ -27,9 +28,10 @@ RSpec.describe COSE::Key do
 
       expect(map[1]).to eq(2)
       expect(map[-1]).to eq(2)
-      expect(map[-2]).to be_truthy
-      expect(map[-3]).to be_truthy
-      expect(map[-4]).to be_truthy
+      public_key_bytes = key.public_key.to_bn.to_s(2)[1..-1]
+      expect(map[-2]).to eq(public_key_bytes[0..47])
+      expect(map[-3]).to eq(public_key_bytes[48..-1])
+      expect(map[-4]).to eq(key.private_key.to_s(2))
     end
 
     it "can serialize EC P-521 key" do
@@ -40,9 +42,10 @@ RSpec.describe COSE::Key do
 
       expect(map[1]).to eq(2)
       expect(map[-1]).to eq(3)
-      expect(map[-2]).to be_truthy
-      expect(map[-3]).to be_truthy
-      expect(map[-4]).to be_truthy
+      public_key_bytes = key.public_key.to_bn.to_s(2)[1..-1]
+      expect(map[-2]).to eq(public_key_bytes[0..65])
+      expect(map[-3]).to eq(public_key_bytes[66..-1])
+      expect(map[-4]).to eq(key.private_key.to_s(2))
     end
 
     it "can serialize RSA key" do
@@ -52,14 +55,14 @@ RSpec.describe COSE::Key do
       map = CBOR.decode(cbor)
 
       expect(map[1]).to eq(3)
-      expect(map[-1]).to be_truthy
-      expect(map[-2]).to be_truthy
-      expect(map[-3]).to be_truthy
-      expect(map[-4]).to be_truthy
-      expect(map[-5]).to be_truthy
-      expect(map[-6]).to be_truthy
-      expect(map[-7]).to be_truthy
-      expect(map[-8]).to be_truthy
+      expect(map[-1]).to eq(key.params["n"].to_s(2))
+      expect(map[-2]).to eq(key.params["e"].to_s(2))
+      expect(map[-3]).to eq(key.params["d"].to_s(2))
+      expect(map[-4]).to eq(key.params["p"].to_s(2))
+      expect(map[-5]).to eq(key.params["q"].to_s(2))
+      expect(map[-6]).to eq(key.params["dmp1"].to_s(2))
+      expect(map[-7]).to eq(key.params["dmq1"].to_s(2))
+      expect(map[-8]).to eq(key.params["iqmp"].to_s(2))
     end
 
     it "can serialize RSA public key" do
@@ -69,8 +72,8 @@ RSpec.describe COSE::Key do
       map = CBOR.decode(cbor)
 
       expect(map[1]).to eq(3)
-      expect(map[-1]).to be_truthy
-      expect(map[-2]).to be_truthy
+      expect(map[-1]).to eq(key.params["n"].to_s(2))
+      expect(map[-2]).to eq(key.params["e"].to_s(2))
     end
   end
 
