@@ -90,6 +90,19 @@ RSpec.describe COSE::Key do
       }.to raise_error(COSE::UnknownKeyType, "Unsupported or unknown key type 100")
     end
 
+    it "deserializes OKP" do
+      key = COSE::Key.deserialize(
+        CBOR.encode(
+          1 => 1,
+          -1 => 4,
+          -2 => "x".b,
+          -4 => "d".b
+        )
+      )
+
+      expect(key).to be_a(COSE::Key::OKP)
+    end
+
     it "deserializes EC2" do
       key = COSE::Key.deserialize(
         CBOR.encode(

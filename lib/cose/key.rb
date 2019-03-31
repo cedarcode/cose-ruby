@@ -1,5 +1,6 @@
 require "cbor"
 require "cose/key/ec2"
+require "cose/key/okp"
 require "cose/key/rsa"
 require "cose/key/symmetric"
 require "openssl"
@@ -23,6 +24,8 @@ module COSE
       map = CBOR.decode(data)
 
       case map[Base::LABEL_KTY]
+      when COSE::Key::OKP::KTY_OKP
+        COSE::Key::OKP.from_map(map)
       when COSE::Key::EC2::KTY_EC2
         COSE::Key::EC2.from_map(map)
       when COSE::Key::RSA::KTY_RSA

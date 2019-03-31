@@ -30,18 +30,25 @@ Or install it yourself as:
 ```ruby
 cbor_data = "..."
 
-cose_key = COSE::Key.deserialize(cbor_data)
+key = COSE::Key.deserialize(cbor_data)
 ```
 
 Once you have a `COSE::Key` instance you can either access key parameters directly and/or convert it to an
-`OpenSSL::PKey::PKey` instance for operating with it (encrypting/decrypting, signing/verifying, etc).
+`OpenSSL::PKey::PKey` instance (if supported for the key type) for operating with it
+(encrypting/decrypting, signing/verifying, etc).
 
 ```ruby
 # Convert to an OpenSSL::PKey::PKey
-openssl_pkey = cose_key.to_pkey
+if key.respond_to?(:to_pkey)
+  openssl_pkey = key.to_pkey
+end
 
 # Access COSE key parameters
 case key
+when COSE::Key::OKP
+  key.crv
+  key.x
+  key.d
 when COSE::Key::EC2
   key.curve
   key.x_coordinate
@@ -62,6 +69,16 @@ end
 ```
 
 If you already know which COSE key type is encoded in the CBOR data, then:
+
+```ruby
+okp_key_cbor = "..."
+
+cose_okp_key = COSE::Key::OKP.deserialize(okp_key_cbor)
+
+cose_okp_key.crv
+cose_okp_key.x
+cose_okp_key.d
+```
 
 ```ruby
 ec2_key_cbor = "..."
