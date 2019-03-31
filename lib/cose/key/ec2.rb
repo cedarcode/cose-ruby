@@ -6,8 +6,6 @@ require "openssl"
 module COSE
   module Key
     class EC2 < Base
-      ALG_LABEL = 3
-
       CRV_LABEL = -1
       D_LABEL = -4
       X_LABEL = -2
@@ -53,9 +51,11 @@ module COSE
         new(curve: curve, x_coordinate: x_coordinate, y_coordinate: y_coordinate, d_coordinate: d_coordinate)
       end
 
-      attr_reader :algorithm, :curve, :d_coordinate, :x_coordinate, :y_coordinate
+      attr_reader :curve, :d_coordinate, :x_coordinate, :y_coordinate
 
-      def initialize(algorithm: nil, curve:, d_coordinate: nil, x_coordinate:, y_coordinate:)
+      def initialize(curve:, d_coordinate: nil, x_coordinate:, y_coordinate:, **keyword_arguments)
+        super(**keyword_arguments)
+
         if !curve
           raise ArgumentError, "Required curve is missing"
         elsif !x_coordinate
@@ -63,7 +63,6 @@ module COSE
         elsif !y_coordinate
           raise ArgumentError, "Required y-coordinate is missing"
         else
-          @algorithm = algorithm
           @curve = curve
           @d_coordinate = d_coordinate
           @x_coordinate = x_coordinate
@@ -71,8 +70,8 @@ module COSE
         end
       end
 
-      def serialize
-        CBOR.encode(
+      def map
+        super.merge(
           Base::LABEL_KTY => KTY_EC2,
           CRV_LABEL => curve,
           X_LABEL => x_coordinate,
@@ -99,16 +98,15 @@ module COSE
         end
       end
 
-      def self.from_map(map)
+      def self.keyword_arguments_for_initialize(map)
         enforce_type(map, KTY_EC2, "Not an EC2 key")
 
-        new(
-          algorithm: map[ALG_LABEL],
+        {
           curve: map[CRV_LABEL],
           d_coordinate: map[D_LABEL],
           x_coordinate: map[X_LABEL],
           y_coordinate: map[Y_LABEL]
-        )
+        }
       end
     end
   end

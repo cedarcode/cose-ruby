@@ -38,6 +38,10 @@ RSpec.describe COSE::Key::EC2 do
   it "can decode CBOR" do
     key = COSE::Key::EC2.deserialize(
       CBOR.encode(
+        5 => "init-vector".b,
+        4 => 1,
+        3 => -7,
+        2 => "id".b,
         1 => 2,
         -1 => 1,
         -2 => "x",
@@ -46,6 +50,10 @@ RSpec.describe COSE::Key::EC2 do
       )
     )
 
+    expect(key.base_iv).to eq("init-vector".b)
+    expect(key.key_ops).to eq(1)
+    expect(key.alg).to eq(-7)
+    expect(key.kid).to eq("id".b)
     expect(key.curve).to eq(1)
     expect(key.x_coordinate).to eq("x")
     expect(key.y_coordinate).to eq("y")
@@ -81,6 +89,35 @@ RSpec.describe COSE::Key::EC2 do
       expect(pkey.group.curve_name).to eq("secp521r1")
       expect(pkey.public_key).to eq(original_pkey.public_key)
       expect(pkey.private_key).to eq(original_pkey.private_key)
+    end
+  end
+
+  context "#serialize" do
+    it "works" do
+      key = COSE::Key::EC2.new(
+        kid: "id".b,
+        alg: -7,
+        key_ops: 1,
+        base_iv: "init-vector".b,
+        curve: 1,
+        x_coordinate: "x",
+        y_coordinate: "y",
+        d_coordinate: "d"
+      )
+
+      serialized_key = key.serialize
+
+      map = CBOR.decode(serialized_key)
+
+      expect(map[5]).to eq("init-vector".b)
+      expect(map[4]).to eq(1)
+      expect(map[3]).to eq(-7)
+      expect(map[2]).to eq("id".b)
+      expect(map[1]).to eq(2)
+      expect(map[-1]).to eq(1)
+      expect(map[-2]).to eq("x")
+      expect(map[-3]).to eq("y")
+      expect(map[-4]).to eq("d")
     end
   end
 end
