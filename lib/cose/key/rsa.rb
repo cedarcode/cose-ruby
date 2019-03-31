@@ -58,8 +58,11 @@ module COSE
         prime_factor_q: nil,
         d_p: nil,
         d_q: nil,
-        q_inv: nil
+        q_inv: nil,
+        **keyword_arguments
       )
+        super(**keyword_arguments)
+
         if !modulus_n
           raise ArgumentError, "Required modulus_n is missing"
         elsif !public_exponent_e
@@ -76,8 +79,8 @@ module COSE
         end
       end
 
-      def serialize
-        CBOR.encode(
+      def map
+        super.merge(
           Base::LABEL_KTY => KTY_RSA,
           LABEL_N => modulus_n,
           LABEL_E => public_exponent_e,
@@ -100,10 +103,13 @@ module COSE
         pkey
       end
 
-      def self.from_map(map)
+      def self.keyword_arguments_for_initialize(map)
         enforce_type(map, KTY_RSA, "Not an RSA key")
 
-        new(modulus_n: map[LABEL_N], public_exponent_e: map[LABEL_E])
+        {
+          modulus_n: map[LABEL_N],
+          public_exponent_e: map[LABEL_E]
+        }
       end
 
       private

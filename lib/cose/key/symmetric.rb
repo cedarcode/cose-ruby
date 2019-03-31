@@ -10,7 +10,9 @@ module COSE
 
       attr_reader :key_value
 
-      def initialize(key_value:)
+      def initialize(key_value:, **keyword_arguments)
+        super(**keyword_arguments)
+
         if !key_value
           raise ArgumentError, "Required key value is missing"
         end
@@ -18,10 +20,14 @@ module COSE
         @key_value = key_value
       end
 
-      def self.from_map(map)
+      def map
+        super.merge(LABEL_KTY => KTY_SYMMETRIC, K_LABEL => key_value)
+      end
+
+      def self.keyword_arguments_for_initialize(map)
         enforce_type(map, KTY_SYMMETRIC, "Not a Symmetric key")
 
-        new(key_value: map[K_LABEL])
+        { key_value: map[K_LABEL] }
       end
     end
   end
