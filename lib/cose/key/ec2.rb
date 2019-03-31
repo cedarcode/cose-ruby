@@ -74,6 +74,7 @@ module COSE
       def serialize
         CBOR.encode(
           Base::LABEL_KTY => KTY_EC2,
+          ALG_LABEL => algorithm,
           CRV_LABEL => curve,
           X_LABEL => x_coordinate,
           Y_LABEL => y_coordinate,

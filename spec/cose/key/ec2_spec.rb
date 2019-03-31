@@ -39,6 +39,7 @@ RSpec.describe COSE::Key::EC2 do
     key = COSE::Key::EC2.deserialize(
       CBOR.encode(
         1 => 2,
+        3 => -7,
         -1 => 1,
         -2 => "x",
         -3 => "y",
@@ -46,6 +47,7 @@ RSpec.describe COSE::Key::EC2 do
       )
     )
 
+    expect(key.algorithm).to eq(-7)
     expect(key.curve).to eq(1)
     expect(key.x_coordinate).to eq("x")
     expect(key.y_coordinate).to eq("y")
@@ -81,6 +83,29 @@ RSpec.describe COSE::Key::EC2 do
       expect(pkey.group.curve_name).to eq("secp521r1")
       expect(pkey.public_key).to eq(original_pkey.public_key)
       expect(pkey.private_key).to eq(original_pkey.private_key)
+    end
+  end
+
+  context "#serialize" do
+    it "works" do
+      key = COSE::Key::EC2.new(
+        algorithm: -7,
+        curve: 1,
+        x_coordinate: "x",
+        y_coordinate: "y",
+        d_coordinate: "d"
+      )
+
+      serialized_key = key.serialize
+
+      map = CBOR.decode(serialized_key)
+
+      expect(map[3]).to eq(-7)
+      expect(map[1]).to eq(2)
+      expect(map[-1]).to eq(1)
+      expect(map[-2]).to eq("x")
+      expect(map[-3]).to eq("y")
+      expect(map[-4]).to eq("d")
     end
   end
 end
