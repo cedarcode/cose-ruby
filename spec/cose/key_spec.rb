@@ -90,6 +90,17 @@ RSpec.describe COSE::Key do
       }.to raise_error(COSE::UnknownKeyType, "Unsupported or unknown key type 100")
     end
 
+    it "returns error if missing kty" do
+      expect {
+        COSE::Key.deserialize(
+          CBOR.encode(
+            -1 => "a",
+            -2 => "b"
+          )
+        )
+      }.to raise_error(COSE::UnknownKeyType, "Missing required key type kty label")
+    end
+
     it "deserializes OKP" do
       key = COSE::Key.deserialize(
         CBOR.encode(

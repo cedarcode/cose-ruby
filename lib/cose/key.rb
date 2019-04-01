@@ -32,6 +32,8 @@ module COSE
         COSE::Key::RSA.from_map(map)
       when COSE::Key::Symmetric::KTY_SYMMETRIC
         COSE::Key::Symmetric.from_map(map)
+      when nil
+        raise UnknownKeyType, "Missing required key type kty label"
       else
         raise UnknownKeyType, "Unsupported or unknown key type #{map[Base::LABEL_KTY]}"
       end
