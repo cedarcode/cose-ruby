@@ -64,7 +64,7 @@ when COSE::Key::RSA
   key.dq
   key.qinv
 when COSE::Key::Symmetric
-  key.key_value
+  key.k
 end
 ```
 
@@ -100,7 +100,7 @@ symmetric_key_cbor = "..."
 
 cose_symmetric_key = COSE::Key::Symmetric.deserialize(symmetric_key_cbor)
 
-cose_symmetric_key.key_value
+cose_symmetric_key.k
 ```
 
 ```ruby

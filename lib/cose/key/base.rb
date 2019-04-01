@@ -41,12 +41,14 @@ module COSE
       end
 
       def map
-        {
+        map = {
           LABEL_BASE_IV => base_iv,
           LABEL_KEY_OPS => key_ops,
           LABEL_ALG => alg,
           LABEL_KID => kid,
         }
+
+        map.reject { |_k, v| v.nil? }
       end
     end
   end

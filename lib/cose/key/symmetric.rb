@@ -5,10 +5,11 @@ require "cose/key/base"
 module COSE
   module Key
     class Symmetric < Base
-      K_LABEL = -1
+      LABEL_K = -1
+
       KTY_SYMMETRIC = 4
 
-      attr_reader :key_value
+      attr_reader :k
 
       def self.enforce_type(map)
         if map[LABEL_KTY] != KTY_SYMMETRIC
@@ -16,22 +17,22 @@ module COSE
         end
       end
 
-      def initialize(key_value:, **keyword_arguments)
+      def initialize(k:, **keyword_arguments) # rubocop:disable Naming/UncommunicativeMethodParamName
         super(**keyword_arguments)
 
-        if !key_value
-          raise ArgumentError, "Required key value is missing"
+        if !k
+          raise ArgumentError, "Required key value k is missing"
+        else
+          @k = k
         end
-
-        @key_value = key_value
       end
 
       def map
-        super.merge(LABEL_KTY => KTY_SYMMETRIC, K_LABEL => key_value)
+        super.merge(LABEL_KTY => KTY_SYMMETRIC, LABEL_K => k)
       end
 
       def self.keyword_arguments_for_initialize(map)
-        { key_value: map[K_LABEL] }
+        { k: map[LABEL_K] }
       end
     end
   end
