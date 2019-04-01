@@ -14,10 +14,15 @@ gemfile:
   - gemfiles/openssl_2_1.gemfile
   - gemfiles/openssl_default.gemfile
 
-before_install: gem install bundler -v 2.0.1
+before_install: gem install bundler -v '~> 1.17'
 
 matrix:
   fast_finish: true
   allow_failures:
     - rvm: ruby-head
     - rvm: 2.2.10
+  exclude:
+    - rvm: 2.2.10
+      gemfile: gemfiles/openssl_2_0.gemfile
+    - rvm: 2.2.10
+      gemfile: gemfiles/openssl_2_1.gemfile
