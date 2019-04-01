@@ -16,6 +16,8 @@ module COSE
       end
 
       def self.from_map(map)
+        enforce_type(map)
+
         new(
           base_iv: map[LABEL_BASE_IV],
           key_ops: map[LABEL_KEY_OPS],
@@ -23,12 +25,6 @@ module COSE
           kid: map[LABEL_KID],
           **keyword_arguments_for_initialize(map)
         )
-      end
-
-      def self.enforce_type(map, kty, error_message)
-        if map[LABEL_KTY] != kty
-          raise error_message
-        end
       end
 
       attr_reader :kid, :alg, :key_ops, :base_iv

@@ -10,6 +10,12 @@ module COSE
 
       attr_reader :key_value
 
+      def self.enforce_type(map)
+        if map[LABEL_KTY] != KTY_SYMMETRIC
+          raise "Not a Symmetric key"
+        end
+      end
+
       def initialize(key_value:, **keyword_arguments)
         super(**keyword_arguments)
 
@@ -25,8 +31,6 @@ module COSE
       end
 
       def self.keyword_arguments_for_initialize(map)
-        enforce_type(map, KTY_SYMMETRIC, "Not a Symmetric key")
-
         { key_value: map[K_LABEL] }
       end
     end

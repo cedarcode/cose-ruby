@@ -14,9 +14,13 @@ module COSE
 
       attr_reader :crv, :d, :x
 
-      def self.keyword_arguments_for_initialize(map)
-        enforce_type(map, KTY_OKP, "Not an OKP key")
+      def self.enforce_type(map)
+        if map[LABEL_KTY] != KTY_OKP
+          raise "Not an OKP key"
+        end
+      end
 
+      def self.keyword_arguments_for_initialize(map)
         {
           crv: map[LABEL_CRV],
           x: map[LABEL_X],

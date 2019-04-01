@@ -1,15 +1,12 @@
 # frozen_string_literal: true
 
-require "cose/key/base"
+require "cose/key/okp"
 require "openssl"
 
 module COSE
   module Key
-    class EC2 < Base
-      CRV_LABEL = -1
-      D_LABEL = -4
-      X_LABEL = -2
-      Y_LABEL = -3
+    class EC2 < OKP
+      LABEL_Y = -3
 
       KTY_EC2 = 2
       CRV_P256 = 1
@@ -21,6 +18,12 @@ module COSE
         CRV_P384 => "secp384r1",
         CRV_P521 => "secp521r1"
       }.freeze
+
+      def self.enforce_type(map)
+        if map[LABEL_KTY] != KTY_EC2
+          raise "Not an EC2 key"
+        end
+      end
 
       def self.from_pkey(pkey)
         curve = PKEY_CURVES.key(pkey.group.curve_name) || raise("Unsupported EC curve #{pkey.group.curve_name}")
@@ -40,73 +43,58 @@ module COSE
 
           coordinate_length = bytes.size / 2
 
-          x_coordinate = bytes[0..(coordinate_length - 1)]
-          y_coordinate = bytes[coordinate_length..-1]
+          x = bytes[0..(coordinate_length - 1)]
+          y = bytes[coordinate_length..-1]
         end
 
         if private_key
-          d_coordinate = private_key.to_s(2)
+          d = private_key.to_s(2)
         end
 
-        new(curve: curve, x_coordinate: x_coordinate, y_coordinate: y_coordinate, d_coordinate: d_coordinate)
+        new(crv: curve, x: x, y: y, d: d)
       end
 
-      attr_reader :curve, :d_coordinate, :x_coordinate, :y_coordinate
+      attr_reader :y
 
-      def initialize(curve:, d_coordinate: nil, x_coordinate:, y_coordinate:, **keyword_arguments)
-        super(**keyword_arguments)
-
-        if !curve
-          raise ArgumentError, "Required curve is missing"
-        elsif !x_coordinate
-          raise ArgumentError, "Required x-coordinate is missing"
-        elsif !y_coordinate
-          raise ArgumentError, "Required y-coordinate is missing"
+      def initialize(y: nil, **keyword_arguments) # rubocop:disable Naming/UncommunicativeMethodParamName
+        if (!y || !keyword_arguments[:x]) && !keyword_arguments[:d]
+          raise ArgumentError, "Both x and y are required if d is missing"
         else
-          @curve = curve
-          @d_coordinate = d_coordinate
-          @x_coordinate = x_coordinate
-          @y_coordinate = y_coordinate
+          super(**keyword_arguments)
+
+          @y = y
         end
       end
 
       def map
-        super.merge(
+        map = super.merge(
           Base::LABEL_KTY => KTY_EC2,
-          CRV_LABEL => curve,
-          X_LABEL => x_coordinate,
-          Y_LABEL => y_coordinate,
-          D_LABEL => d_coordinate
+          LABEL_Y => y,
         )
+
+        map.reject { |_k, v| v.nil? }
       end
 
       def to_pkey
-        if PKEY_CURVES[curve]
-          group = OpenSSL::PKey::EC::Group.new(PKEY_CURVES[curve])
+        if PKEY_CURVES[crv]
+          group = OpenSSL::PKey::EC::Group.new(PKEY_CURVES[crv])
           pkey = OpenSSL::PKey::EC.new(group)
-          public_key_bn = OpenSSL::BN.new("\x04" + x_coordinate + y_coordinate, 2)
+          public_key_bn = OpenSSL::BN.new("\x04" + x + y, 2)
           public_key_point = OpenSSL::PKey::EC::Point.new(group, public_key_bn)
           pkey.public_key = public_key_point
 
-          if d_coordinate
-            pkey.private_key = OpenSSL::BN.new(d_coordinate, 2)
+          if d
+            pkey.private_key = OpenSSL::BN.new(d, 2)
           end
 
           pkey
         else
-          raise "Unsupported curve #{curve}"
+          raise "Unsupported curve #{crv}"
         end
       end
 
       def self.keyword_arguments_for_initialize(map)
-        enforce_type(map, KTY_EC2, "Not an EC2 key")
-
-        {
-          curve: map[CRV_LABEL],
-          d_coordinate: map[D_LABEL],
-          x_coordinate: map[X_LABEL],
-          y_coordinate: map[Y_LABEL]
-        }
+        super.merge(y: map[LABEL_Y])
       end
     end
   end

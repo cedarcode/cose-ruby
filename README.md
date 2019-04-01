@@ -50,10 +50,10 @@ when COSE::Key::OKP
   key.x
   key.d
 when COSE::Key::EC2
-  key.curve
-  key.x_coordinate
-  key.y_coordinate
-  key.d_coordinate
+  key.crv
+  key.x
+  key.y
+  key.d
 when COSE::Key::RSA
   key.n
   key.e
@@ -85,10 +85,10 @@ ec2_key_cbor = "..."
 
 cose_ec2_key = COSE::Key::EC2.deserialize(ec2_key_cbor)
 
-cose_ec2_key.curve
-cose_ec2_key.x_coordinate
-cose_ec2_key.y_coordinate
-cose_ec2_key.d_coordinate
+cose_ec2_key.crv
+cose_ec2_key.x
+cose_ec2_key.y
+cose_ec2_key.d
 
 # or
 

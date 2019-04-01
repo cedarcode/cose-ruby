@@ -4,64 +4,95 @@ require "cose/key/ec2"
 require "openssl"
 
 RSpec.describe COSE::Key::EC2 do
-  it "returns an error if crv is missing" do
-    expect {
-      COSE::Key::EC2.new(curve: nil, x_coordinate: "x", y_coordinate: "y")
-    }.to raise_error(ArgumentError, "Required curve is missing")
+  describe ".new" do
+    it "validates crv presence" do
+      expect { COSE::Key::EC2.new(crv: nil, x: "x".b, y: "y".b) }.to raise_error("Required crv is missing")
+    end
+
+    it "validates presence of at least x and y if d missing" do
+      expect {
+        COSE::Key::EC2.new(crv: 4, x: nil, y: nil)
+      }.to raise_error("Both x and y are required if d is missing")
+
+      expect {
+        COSE::Key::EC2.new(crv: 4, x: "x".b, y: nil)
+      }.to raise_error("Both x and y are required if d is missing")
+
+      expect {
+        COSE::Key::EC2.new(crv: 4, x: nil, y: "y".b)
+      }.to raise_error("Both x and y are required if d is missing")
+    end
+
+    it "can build a public key" do
+      key = COSE::Key::EC2.new(crv: 4, x: "x".b, y: "y".b)
+
+      expect(key.crv).to eq(4)
+      expect(key.x).to eq("x".b)
+      expect(key.y).to eq("y".b)
+      expect(key.d).to eq(nil)
+    end
+
+    it "can build a private key without x and y" do
+      key = COSE::Key::EC2.new(crv: 4, d: "d".b)
+
+      expect(key.crv).to eq(4)
+      expect(key.x).to eq(nil)
+      expect(key.y).to eq(nil)
+      expect(key.d).to eq("d".b)
+    end
+
+    it "can build a private key with x and y" do
+      key = COSE::Key::EC2.new(crv: 4, x: "x".b, y: "y".b, d: "d".b)
+
+      expect(key.crv).to eq(4)
+      expect(key.x).to eq("x".b)
+      expect(key.y).to eq("y".b)
+      expect(key.d).to eq("d".b)
+    end
   end
 
-  it "returns an error if x is missing" do
-    expect {
-      COSE::Key::EC2.new(curve: 1, x_coordinate: nil, y_coordinate: "y")
-    }.to raise_error(ArgumentError, "Required x-coordinate is missing")
-  end
-
-  it "returns an error if y is missing" do
-    expect {
-      COSE::Key::EC2.new(curve: 1, x_coordinate: "x", y_coordinate: nil)
-    }.to raise_error(ArgumentError, "Required y-coordinate is missing")
-  end
-
-  it "returns an error if key type is wrong" do
-    expect {
-      COSE::Key::EC2.deserialize(
+  describe ".deserialize" do
+    it "works" do
+      key = COSE::Key::EC2.deserialize(
         CBOR.encode(
-          1 => 4,
+          5 => "init-vector".b,
+          4 => 1,
+          3 => -7,
+          2 => "id".b,
+          1 => 2,
           -1 => 1,
-          -2 => "x",
-          -3 => "y"
+          -2 => "x".b,
+          -3 => "y".b,
+          -4 => "d".b
         )
       )
-    }.to raise_error("Not an EC2 key")
-  end
 
-  it "can decode CBOR" do
-    key = COSE::Key::EC2.deserialize(
-      CBOR.encode(
-        5 => "init-vector".b,
-        4 => 1,
-        3 => -7,
-        2 => "id".b,
-        1 => 2,
-        -1 => 1,
-        -2 => "x",
-        -3 => "y",
-        -4 => "d",
-      )
-    )
+      expect(key.base_iv).to eq("init-vector".b)
+      expect(key.key_ops).to eq(1)
+      expect(key.alg).to eq(-7)
+      expect(key.kid).to eq("id".b)
+      expect(key.crv).to eq(1)
+      expect(key.x).to eq("x".b)
+      expect(key.y).to eq("y".b)
+      expect(key.d).to eq("d".b)
+    end
 
-    expect(key.base_iv).to eq("init-vector".b)
-    expect(key.key_ops).to eq(1)
-    expect(key.alg).to eq(-7)
-    expect(key.kid).to eq("id".b)
-    expect(key.curve).to eq(1)
-    expect(key.x_coordinate).to eq("x")
-    expect(key.y_coordinate).to eq("y")
-    expect(key.d_coordinate).to eq("d")
+    it "returns an error if key type is wrong" do
+      expect {
+        COSE::Key::EC2.deserialize(
+          CBOR.encode(
+            1 => 4,
+            -1 => 1,
+            -2 => "x",
+            -3 => "y"
+          )
+        )
+      }.to raise_error("Not an EC2 key")
+    end
   end
 
   context "#to_pkey" do
-    it "works for a P-256 key" do
+    it "works for an EC key in the P-256 curve" do
       original_pkey = OpenSSL::PKey::EC.new("prime256v1").generate_key
       pkey = COSE::Key::EC2.from_pkey(original_pkey).to_pkey
 
@@ -71,7 +102,7 @@ RSpec.describe COSE::Key::EC2 do
       expect(pkey.private_key).to eq(original_pkey.private_key)
     end
 
-    it "works for a P-384 key" do
+    it "works for an EC key in the P-384 curve" do
       original_pkey = OpenSSL::PKey::EC.new("secp384r1").generate_key
       pkey = COSE::Key::EC2.from_pkey(original_pkey).to_pkey
 
@@ -81,7 +112,7 @@ RSpec.describe COSE::Key::EC2 do
       expect(pkey.private_key).to eq(original_pkey.private_key)
     end
 
-    it "works for a P-521 key" do
+    it "works for an EC key in the P-521 curve" do
       original_pkey = OpenSSL::PKey::EC.new("secp521r1").generate_key
       pkey = COSE::Key::EC2.from_pkey(original_pkey).to_pkey
 
@@ -92,17 +123,17 @@ RSpec.describe COSE::Key::EC2 do
     end
   end
 
-  context "#serialize" do
+  describe "#serialize" do
     it "works" do
       key = COSE::Key::EC2.new(
         kid: "id".b,
         alg: -7,
         key_ops: 1,
         base_iv: "init-vector".b,
-        curve: 1,
-        x_coordinate: "x",
-        y_coordinate: "y",
-        d_coordinate: "d"
+        crv: 1,
+        x: "x".b,
+        y: "y".b,
+        d: "d".b
       )
 
       serialized_key = key.serialize
@@ -115,9 +146,22 @@ RSpec.describe COSE::Key::EC2 do
       expect(map[2]).to eq("id".b)
       expect(map[1]).to eq(2)
       expect(map[-1]).to eq(1)
-      expect(map[-2]).to eq("x")
-      expect(map[-3]).to eq("y")
-      expect(map[-4]).to eq("d")
+      expect(map[-2]).to eq("x".b)
+      expect(map[-3]).to eq("y".b)
+      expect(map[-4]).to eq("d".b)
+    end
+
+    it "does not include labels without value" do
+      key = COSE::Key::EC2.new(crv: 1, d: "d".b)
+
+      serialized_key = key.serialize
+
+      map = CBOR.decode(serialized_key)
+
+      expect(map.keys.size).to eq(3)
+      expect(map[1]).to eq(2)
+      expect(map[-1]).to eq(1)
+      expect(map[-4]).to eq("d".b)
     end
   end
 end

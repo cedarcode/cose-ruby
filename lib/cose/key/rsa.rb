@@ -17,6 +17,12 @@ module COSE
 
       KTY_RSA = 3
 
+      def self.enforce_type(map)
+        if map[LABEL_KTY] != KTY_RSA
+          raise "Not an RSA key"
+        end
+      end
+
       def self.from_pkey(pkey)
         params = pkey.params
 
@@ -113,8 +119,6 @@ module COSE
       end
 
       def self.keyword_arguments_for_initialize(map)
-        enforce_type(map, KTY_RSA, "Not an RSA key")
-
         {
           n: map[LABEL_N],
           e: map[LABEL_E],
