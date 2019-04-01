@@ -55,14 +55,14 @@ when COSE::Key::EC2
   key.y_coordinate
   key.d_coordinate
 when COSE::Key::RSA
-  key.modulus_n
-  key.public_exponent_e
-  key.private_exponent_d
-  key.prime_factor_p
-  key.prime_factor_q
-  key.d_p
-  key.d_q
-  key.q_inv
+  key.n
+  key.e
+  key.d
+  key.p
+  key.q
+  key.dp
+  key.dq
+  key.qinv
 when COSE::Key::Symmetric
   key.key_value
 end
@@ -108,14 +108,14 @@ rsa_key_cbor = "..."
 
 cose_rsa_key = COSE::Key::RSA.deserialize(rsa_key_cbor)
 
-cose_rsa_key.modulus_n
-cose_rsa_key.public_exponent_e
-cose_rsa_key.private_exponent_d
-cose_rsa_key.prime_factor_p
-cose_rsa_key.prime_factor_q
-cose_rsa_key.d_p
-cose_rsa_key.d_q
-cose_rsa_key.q_inv
+cose_rsa_key.n
+cose_rsa_key.e
+cose_rsa_key.d
+cose_rsa_key.p
+cose_rsa_key.q
+cose_rsa_key.dp
+cose_rsa_key.dq
+cose_rsa_key.qinv
 
 # or
 

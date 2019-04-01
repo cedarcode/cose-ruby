@@ -11,9 +11,9 @@ module COSE
       LABEL_D = -3
       LABEL_P = -4
       LABEL_Q = -5
-      LABEL_D_P = -6
-      LABEL_D_Q = -7
-      LABEL_Q_INV = -8
+      LABEL_DP = -6
+      LABEL_DQ = -7
+      LABEL_QINV = -8
 
       KTY_RSA = 3
 
@@ -21,102 +21,92 @@ module COSE
         params = pkey.params
 
         attributes = {
-          modulus_n: params["n"].to_s(2),
-          public_exponent_e: params["e"].to_s(2)
+          n: params["n"].to_s(2),
+          e: params["e"].to_s(2)
         }
 
         if pkey.private?
           attributes.merge!(
-            private_exponent_d: params["d"].to_s(2),
-            prime_factor_p: params["p"].to_s(2),
-            prime_factor_q: params["q"].to_s(2),
-            d_p: params["dmp1"].to_s(2),
-            d_q: params["dmq1"].to_s(2),
-            q_inv: params["iqmp"].to_s(2)
+            d: params["d"].to_s(2),
+            p: params["p"].to_s(2),
+            q: params["q"].to_s(2),
+            dp: params["dmp1"].to_s(2),
+            dq: params["dmq1"].to_s(2),
+            qinv: params["iqmp"].to_s(2)
           )
         end
 
         new(attributes)
       end
 
-      attr_reader(
-        :modulus_n,
-        :public_exponent_e,
-        :private_exponent_d,
-        :prime_factor_p,
-        :prime_factor_q,
-        :d_p,
-        :d_q,
-        :q_inv
-      )
+      attr_reader :n, :e, :d, :p, :q, :dp, :dq, :qinv
 
-      def initialize(
-        modulus_n:,
-        public_exponent_e:,
-        private_exponent_d: nil,
-        prime_factor_p: nil,
-        prime_factor_q: nil,
-        d_p: nil,
-        d_q: nil,
-        q_inv: nil,
-        **keyword_arguments
-      )
+      def initialize(n:, e:, d: nil, p: nil, q: nil, dp: nil, dq: nil, qinv: nil, **keyword_arguments) # rubocop:disable Naming/UncommunicativeMethodParamName
         super(**keyword_arguments)
 
-        if !modulus_n
-          raise ArgumentError, "Required modulus_n is missing"
-        elsif !public_exponent_e
-          raise ArgumentError, "Required public_exponent_e is missing"
+        if !n
+          raise ArgumentError, "Required public field n is missing"
+        elsif !e
+          raise ArgumentError, "Required public field e is missing"
         else
-          @modulus_n = modulus_n
-          @public_exponent_e = public_exponent_e
-          @private_exponent_d = private_exponent_d
-          @prime_factor_p = prime_factor_p
-          @prime_factor_q = prime_factor_q
-          @d_p = d_p
-          @d_q = d_q
-          @q_inv = q_inv
+          private_fields = { d: d, p: p, q: q, dp: dp, dq: dq, qinv: qinv }
+
+          if private_fields.values.all?(&:nil?) || private_fields.values.none?(&:nil?)
+            @n = n
+            @e = e
+            @d = d
+            @p = p
+            @q = q
+            @dp = dp
+            @dq = dq
+            @qinv = qinv
+          else
+            missing = private_fields.detect { |_k, v| v.nil? }[0]
+            raise ArgumentError, "Incomplete private fields, #{missing} is missing"
+          end
         end
       end
 
       def map
-        super.merge(
+        map = super.merge(
           Base::LABEL_KTY => KTY_RSA,
-          LABEL_N => modulus_n,
-          LABEL_E => public_exponent_e,
-          LABEL_D => private_exponent_d,
-          LABEL_P => prime_factor_p,
-          LABEL_Q => prime_factor_q,
-          LABEL_D_P => d_p,
-          LABEL_D_Q => d_q,
-          LABEL_Q_INV => q_inv
+          LABEL_N => n,
+          LABEL_E => e,
+          LABEL_D => d,
+          LABEL_P => p,
+          LABEL_Q => q,
+          LABEL_DP => dp,
+          LABEL_DQ => dq,
+          LABEL_QINV => qinv
         )
+
+        map.reject { |_k, v| v.nil? }
       end
 
       def to_pkey
         pkey = OpenSSL::PKey::RSA.new
 
         if pkey.respond_to?(:set_key)
-          pkey.set_key(bn(modulus_n), bn(public_exponent_e), bn(private_exponent_d))
+          pkey.set_key(bn(n), bn(e), bn(d))
         else
-          pkey.n = bn(modulus_n)
-          pkey.e = bn(public_exponent_e)
-          pkey.d = bn(private_exponent_d)
+          pkey.n = bn(n)
+          pkey.e = bn(e)
+          pkey.d = bn(d)
         end
 
         if pkey.respond_to?(:set_factors)
-          pkey.set_factors(bn(prime_factor_p), bn(prime_factor_q))
+          pkey.set_factors(bn(p), bn(q))
         else
-          pkey.p = bn(prime_factor_p)
-          pkey.q = bn(prime_factor_q)
+          pkey.p = bn(p)
+          pkey.q = bn(q)
         end
 
         if pkey.respond_to?(:set_crt_params)
-          pkey.set_crt_params(bn(d_p), bn(d_q), bn(q_inv))
+          pkey.set_crt_params(bn(dp), bn(dq), bn(qinv))
         else
-          pkey.dmp1 = bn(d_p)
-          pkey.dmq1 = bn(d_q)
-          pkey.iqmp = bn(q_inv)
+          pkey.dmp1 = bn(dp)
+          pkey.dmq1 = bn(dq)
+          pkey.iqmp = bn(qinv)
         end
 
         pkey
@@ -126,8 +116,14 @@ module COSE
         enforce_type(map, KTY_RSA, "Not an RSA key")
 
         {
-          modulus_n: map[LABEL_N],
-          public_exponent_e: map[LABEL_E]
+          n: map[LABEL_N],
+          e: map[LABEL_E],
+          d: map[LABEL_D],
+          p: map[LABEL_P],
+          q: map[LABEL_Q],
+          dp: map[LABEL_DP],
+          dq: map[LABEL_DQ],
+          qinv: map[LABEL_QINV]
         }
       end
 
