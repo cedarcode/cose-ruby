@@ -96,9 +96,28 @@ module COSE
       def to_pkey
         pkey = OpenSSL::PKey::RSA.new
 
-        pkey.set_key(bn(modulus_n), bn(public_exponent_e), bn(private_exponent_d))
-        pkey.set_factors(bn(prime_factor_p), bn(prime_factor_q))
-        pkey.set_crt_params(bn(d_p), bn(d_q), bn(q_inv))
+        if pkey.respond_to?(:set_key)
+          pkey.set_key(bn(modulus_n), bn(public_exponent_e), bn(private_exponent_d))
+        else
+          pkey.n = bn(modulus_n)
+          pkey.e = bn(public_exponent_e)
+          pkey.d = bn(private_exponent_d)
+        end
+
+        if pkey.respond_to?(:set_factors)
+          pkey.set_factors(bn(prime_factor_p), bn(prime_factor_q))
+        else
+          pkey.p = bn(prime_factor_p)
+          pkey.q = bn(prime_factor_q)
+        end
+
+        if pkey.respond_to?(:set_crt_params)
+          pkey.set_crt_params(bn(d_p), bn(d_q), bn(q_inv))
+        else
+          pkey.dmp1 = bn(d_p)
+          pkey.dmq1 = bn(d_q)
+          pkey.iqmp = bn(q_inv)
+        end
 
         pkey
       end
