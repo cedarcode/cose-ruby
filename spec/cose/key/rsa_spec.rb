@@ -4,49 +4,117 @@ require "cose/key/rsa"
 require "openssl"
 
 RSpec.describe COSE::Key::RSA do
-  it "returns an error if modulus_n is missing" do
-    expect {
-      COSE::Key::RSA.new(modulus_n: nil, public_exponent_e: "e")
-    }.to raise_error(ArgumentError, "Required modulus_n is missing")
+  describe ".new" do
+    it "can build a public key" do
+      key = COSE::Key::RSA.new(n: "n".b, e: "e".b)
+
+      expect(key.n).to eq("n".b)
+      expect(key.e).to eq("e".b)
+    end
+
+    it "can build a private key with two primes" do
+      key = COSE::Key::RSA.new(
+        n: "n".b,
+        e: "e".b,
+        d: "d".b,
+        p: "p".b,
+        q: "q".b,
+        dp: "dP".b,
+        dq: "dQ".b,
+        qinv: "qInv".b
+      )
+
+      expect(key.n).to eq("n".b)
+      expect(key.e).to eq("e".b)
+      expect(key.d).to eq("d".b)
+      expect(key.p).to eq("p".b)
+      expect(key.q).to eq("q".b)
+      expect(key.dp).to eq("dP".b)
+      expect(key.dq).to eq("dQ".b)
+      expect(key.qinv).to eq("qInv".b)
+    end
+
+    it "validates presence of all public key fields" do
+      expect {
+        COSE::Key::RSA.new(n: "n".b, e: nil)
+      }.to raise_error("Required public field e is missing")
+
+      expect {
+        COSE::Key::RSA.new(n: nil, e: "e".b)
+      }.to raise_error("Required public field n is missing")
+    end
+
+    it "validates presence of all private key fields" do
+      private_fields = {
+        d: "d".b,
+        p: "p".b,
+        q: "q".b,
+        dp: "dP".b,
+        dq: "dQ".b,
+        qinv: "qInv".b
+      }
+
+      public_fields = {
+        n: "n".b,
+        e: "e".b
+      }
+
+      valid_arguments = public_fields.merge(private_fields)
+
+      private_fields.each do |k, _v|
+        invalid_arguments = valid_arguments.dup
+        invalid_arguments[k] = nil
+
+        expect { COSE::Key::RSA.new(**invalid_arguments) }.to raise_error("Incomplete private fields, #{k} is missing")
+      end
+    end
   end
 
-  it "returns an error if public_exponent_e is missing" do
-    expect {
-      COSE::Key::RSA.new(modulus_n: "n", public_exponent_e: nil)
-    }.to raise_error(ArgumentError, "Required public_exponent_e is missing")
-  end
+  describe ".deserialize" do
+    it "returns an error if key type is wrong" do
+      expect {
+        COSE::Key::RSA.deserialize(
+          CBOR.encode(
+            1 => 4,
+            -1 => "n",
+            -2 => "e"
+          )
+        )
+      }.to raise_error("Not an RSA key")
+    end
 
-  it "returns an error if key type is wrong" do
-    expect {
-      COSE::Key::RSA.deserialize(
+    it "works" do
+      key = COSE::Key::RSA.deserialize(
         CBOR.encode(
-          1 => 4,
-          -1 => "n",
-          -2 => "e"
+          5 => "init-vector".b,
+          4 => 1,
+          3 => -37,
+          2 => "id".b,
+          1 => 3,
+          -1 => "n".b,
+          -2 => "e".b,
+          -3 => "d".b,
+          -4 => "p".b,
+          -5 => "q".b,
+          -6 => "dP".b,
+          -7 => "dQ".b,
+          -8 => "qInv".b
         )
       )
-    }.to raise_error("Not an RSA key")
-  end
 
-  it "can decode CBOR" do
-    key = COSE::Key::RSA.deserialize(
-      CBOR.encode(
-        5 => "init-vector".b,
-        4 => 1,
-        3 => -37,
-        2 => "id".b,
-        1 => 3,
-        -1 => "n",
-        -2 => "e"
-      )
-    )
-
-    expect(key.base_iv).to eq("init-vector".b)
-    expect(key.key_ops).to eq(1)
-    expect(key.alg).to eq(-37)
-    expect(key.kid).to eq("id".b)
-    expect(key.modulus_n).to eq("n")
-    expect(key.public_exponent_e).to eq("e")
+      expect(key.base_iv).to eq("init-vector".b)
+      expect(key.key_ops).to eq(1)
+      expect(key.alg).to eq(-37)
+      expect(key.kid).to eq("id".b)
+      expect(key.n).to eq("n".b)
+      expect(key.e).to eq("e".b)
+      expect(key.d).to eq("d".b)
+      expect(key.p).to eq("p".b)
+      expect(key.q).to eq("q".b)
+      expect(key.dp).to eq("dP".b)
+      expect(key.dq).to eq("dQ".b)
+      expect(key.qinv).to eq("qInv".b)
+    end
   end
 
   context "#to_pkey" do
@@ -74,8 +142,14 @@ RSpec.describe COSE::Key::RSA do
         alg: -37,
         key_ops: 1,
         base_iv: "init-vector".b,
-        modulus_n: "n",
-        public_exponent_e: "e"
+        n: "n".b,
+        e: "e".b,
+        d: "d".b,
+        p: "p".b,
+        q: "q".b,
+        dp: "dP".b,
+        dq: "dQ".b,
+        qinv: "qInv".b
       )
 
       serialized_key = key.serialize
@@ -87,8 +161,27 @@ RSpec.describe COSE::Key::RSA do
       expect(map[3]).to eq(-37)
       expect(map[2]).to eq("id".b)
       expect(map[1]).to eq(3)
-      expect(map[-1]).to eq("n")
-      expect(map[-2]).to eq("e")
+      expect(map[-1]).to eq("n".b)
+      expect(map[-2]).to eq("e".b)
+      expect(map[-3]).to eq("d".b)
+      expect(map[-4]).to eq("p".b)
+      expect(map[-5]).to eq("q".b)
+      expect(map[-6]).to eq("dP".b)
+      expect(map[-7]).to eq("dQ".b)
+      expect(map[-8]).to eq("qInv".b)
+    end
+
+    it "does not include labels without value" do
+      key = COSE::Key::RSA.new(n: "n".b, e: "e".b)
+
+      serialized_key = key.serialize
+
+      map = CBOR.decode(serialized_key)
+
+      expect(map.keys.size).to eq(3)
+      expect(map[1]).to eq(3)
+      expect(map[-1]).to eq("n".b)
+      expect(map[-2]).to eq("e".b)
     end
   end
 end
