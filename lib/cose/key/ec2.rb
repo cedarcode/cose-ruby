@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require "cose/key/okp"
+require "cose/key/curve_key"
 require "openssl"
 
 module COSE
   module Key
-    class EC2 < OKP
+    class EC2 < CurveKey
       LABEL_Y = -3
 
       KTY_EC2 = 2
