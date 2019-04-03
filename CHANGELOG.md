@@ -1,5 +1,18 @@
 # Changelog
 
+## [v0.6.0] - 2019-04-03
+
+### Added
+
+- Support Key Common Parameters (`#base_iv`, `key_ops`, `#alg` and `#kid`)
+- Support OKP Key
+- Support RSA private key serialization
+- Works with ruby 2.3
+
+### Changed
+
+- Key type-specific parameters names better match RFC
+
 ## [v0.5.0] - 2019-03-25
 
 ### Added
@@ -54,6 +67,7 @@
 - EC2 key object
 - Works with ruby 2.5
 
+[v0.6.0]: https://github.com/cedarcode/cose-ruby/compare/v0.5.0...v0.6.0/
 [v0.5.0]: https://github.com/cedarcode/cose-ruby/compare/v0.4.1...v0.5.0/
 [v0.4.1]: https://github.com/cedarcode/cose-ruby/compare/v0.4.0...v0.4.1/
 [v0.4.0]: https://github.com/cedarcode/cose-ruby/compare/v0.3.0...v0.4.0/
