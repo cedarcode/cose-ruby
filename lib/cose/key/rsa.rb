@@ -100,19 +100,21 @@ module COSE
           pkey.d = bn(d)
         end
 
-        if pkey.respond_to?(:set_factors)
-          pkey.set_factors(bn(p), bn(q))
-        else
-          pkey.p = bn(p)
-          pkey.q = bn(q)
-        end
+        if private?
+          if pkey.respond_to?(:set_factors)
+            pkey.set_factors(bn(p), bn(q))
+          else
+            pkey.p = bn(p)
+            pkey.q = bn(q)
+          end
 
-        if pkey.respond_to?(:set_crt_params)
-          pkey.set_crt_params(bn(dp), bn(dq), bn(qinv))
-        else
-          pkey.dmp1 = bn(dp)
-          pkey.dmq1 = bn(dq)
-          pkey.iqmp = bn(qinv)
+          if pkey.respond_to?(:set_crt_params)
+            pkey.set_crt_params(bn(dp), bn(dq), bn(qinv))
+          else
+            pkey.dmp1 = bn(dp)
+            pkey.dmq1 = bn(dq)
+            pkey.iqmp = bn(qinv)
+          end
         end
 
         pkey
@@ -133,8 +135,14 @@ module COSE
 
       private
 
+      def private?
+        [d, p, q, dp, dq, qinv].none?(&:nil?)
+      end
+
       def bn(data)
-        OpenSSL::BN.new(data, 2)
+        if data
+          OpenSSL::BN.new(data, 2)
+        end
       end
     end
   end

@@ -133,6 +133,20 @@ RSpec.describe COSE::Key::RSA do
         expect(param_value).to eq(original_pkey.params[param_name]), "expected key param #{param_name} to match"
       end
     end
+
+    context "for a public key" do
+      let(:original_pkey) { OpenSSL::PKey::RSA.new(2048).public_key }
+
+      it "it generates an instance of OpenSSL::PKey::PKey" do
+        expect(pkey).to be_a(OpenSSL::PKey::RSA)
+      end
+
+      it "it generates the same key" do
+        pkey.params.each do |param_name, param_value|
+          expect(param_value).to eq(original_pkey.params[param_name]), "expected key param #{param_name} to match"
+        end
+      end
+    end
   end
 
   context "#serialize" do
