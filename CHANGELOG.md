@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.6.1] - 2019-04-06
+
+### Fixed
+
+- Fix COSE::Key::RSA#to_pkey for a public key
+
 ## [v0.6.0] - 2019-04-03
 
 ### Added
@@ -67,6 +73,7 @@
 - EC2 key object
 - Works with ruby 2.5
 
+[v0.6.1]: https://github.com/cedarcode/cose-ruby/compare/v0.6.0...v0.6.1/
 [v0.6.0]: https://github.com/cedarcode/cose-ruby/compare/v0.5.0...v0.6.0/
 [v0.5.0]: https://github.com/cedarcode/cose-ruby/compare/v0.4.1...v0.5.0/
 [v0.4.1]: https://github.com/cedarcode/cose-ruby/compare/v0.4.0...v0.4.1/
