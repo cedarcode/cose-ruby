@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "cose/key/curve"
 require "cose/key/curve_key"
 require "openssl"
 
@@ -9,15 +10,6 @@ module COSE
       LABEL_Y = -3
 
       KTY_EC2 = 2
-      CRV_P256 = 1
-      CRV_P384 = 2
-      CRV_P521 = 3
-
-      PKEY_CURVES = {
-        CRV_P256 => "prime256v1",
-        CRV_P384 => "secp384r1",
-        CRV_P521 => "secp521r1"
-      }.freeze
 
       def self.enforce_type(map)
         if map[LABEL_KTY] != KTY_EC2
@@ -26,7 +18,7 @@ module COSE
       end
 
       def self.from_pkey(pkey)
-        curve = PKEY_CURVES.key(pkey.group.curve_name) || raise("Unsupported EC curve #{pkey.group.curve_name}")
+        curve = Curve.by_pkey_name(pkey.group.curve_name) || raise("Unsupported EC curve #{pkey.group.curve_name}")
 
         case pkey
         when OpenSSL::PKey::EC::Point
@@ -51,7 +43,7 @@ module COSE
           d = private_key.to_s(2)
         end
 
-        new(crv: curve, x: x, y: y, d: d)
+        new(crv: curve.id, x: x, y: y, d: d)
       end
 
       attr_reader :y
@@ -76,8 +68,8 @@ module COSE
       end
 
       def to_pkey
-        if PKEY_CURVES[crv]
-          group = OpenSSL::PKey::EC::Group.new(PKEY_CURVES[crv])
+        if curve
+          group = OpenSSL::PKey::EC::Group.new(curve.pkey_name)
           pkey = OpenSSL::PKey::EC.new(group)
           public_key_bn = OpenSSL::BN.new("\x04" + x + y, 2)
           public_key_point = OpenSSL::PKey::EC::Point.new(group, public_key_bn)
@@ -91,6 +83,10 @@ module COSE
         else
           raise "Unsupported curve #{crv}"
         end
+      end
+
+      def curve
+        Curve.find(crv)
       end
 
       def self.keyword_arguments_for_initialize(map)
