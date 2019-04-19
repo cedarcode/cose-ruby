@@ -10,13 +10,17 @@ module COSE
 
   module Key
     def self.serialize(pkey)
+      from_pkey(pkey).serialize
+    end
+
+    def self.from_pkey(pkey)
       case pkey
       when OpenSSL::PKey::EC, OpenSSL::PKey::EC::Point
-        COSE::Key::EC2.from_pkey(pkey).serialize
+        COSE::Key::EC2.from_pkey(pkey)
       when OpenSSL::PKey::RSA
-        COSE::Key::RSA.from_pkey(pkey).serialize
+        COSE::Key::RSA.from_pkey(pkey)
       else
-        raise "Unsupported serialization of #{pkey.class} object"
+        raise "Unsupported #{pkey.class} object"
       end
     end
 
