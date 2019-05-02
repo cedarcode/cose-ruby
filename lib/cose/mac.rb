@@ -1,4 +1,5 @@
 require "cbor"
+require "cose/recipient"
 require "cose/security_message"
 
 module COSE
