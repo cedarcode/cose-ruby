@@ -12,6 +12,10 @@ module COSE
         @curves[id]
       end
 
+      def self.by_name(name)
+        @curves.values.detect { |curve| curve.name == name }
+      end
+
       def self.by_pkey_name(pkey_name)
         @curves.values.detect { |curve| curve.pkey_name == pkey_name }
       end
