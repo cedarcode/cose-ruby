@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.7.0] - 2019-05-02
+
+### Fixed
+
+- `require "cose"` now correctly requires all features
+
 ## [v0.6.1] - 2019-04-06
 
 ### Fixed
@@ -73,6 +79,7 @@
 - EC2 key object
 - Works with ruby 2.5
 
+[v0.7.0]: https://github.com/cedarcode/cose-ruby/compare/v0.6.1...v0.7.0/
 [v0.6.1]: https://github.com/cedarcode/cose-ruby/compare/v0.6.0...v0.6.1/
 [v0.6.0]: https://github.com/cedarcode/cose-ruby/compare/v0.5.0...v0.6.0/
 [v0.5.0]: https://github.com/cedarcode/cose-ruby/compare/v0.4.1...v0.5.0/
