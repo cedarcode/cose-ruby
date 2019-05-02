@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require "bundler/setup"
 require "cbor"
-require "cose"
 require "byebug"
 
 RSpec.configure do |config|
