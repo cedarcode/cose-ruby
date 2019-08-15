@@ -1,6 +1,12 @@
+inherit_mode:
+  merge:
+    - Exclude
+
 AllCops:
   TargetRubyVersion: 2.2
   DisabledByDefault: true
+  Exclude:
+    - "gemfiles/**/*"
 
 Bundler:
   Enabled: true
