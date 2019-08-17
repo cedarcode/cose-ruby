@@ -1,5 +1,12 @@
 # Changelog
 
+## [v0.8.0] - 2019-08-17
+
+### Added
+
+- Support `COSE::Key` instantiation based on an `OpenSSL::PKey` object with `COSE::Key.from_pkey`
+- Provide writer methods for `COSE::Key` Common Parameters (`#base_iv=`, `#key_ops=`, `#alg=` and `#kid=`)
+
 ## [v0.7.0] - 2019-05-02
 
 ### Fixed
@@ -79,6 +86,7 @@
 - EC2 key object
 - Works with ruby 2.5
 
+[v0.8.0]: https://github.com/cedarcode/cose-ruby/compare/v0.7.0...v0.8.0/
 [v0.7.0]: https://github.com/cedarcode/cose-ruby/compare/v0.6.1...v0.7.0/
 [v0.6.1]: https://github.com/cedarcode/cose-ruby/compare/v0.6.0...v0.6.1/
 [v0.6.0]: https://github.com/cedarcode/cose-ruby/compare/v0.5.0...v0.6.0/
