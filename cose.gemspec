@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Gonzalo Rodriguez", "Braulio Martinez"]
   spec.email         = ["gonzalo@cedarcode.com", "braulio@cedarcode.com"]
 
-  spec.summary       = "CBOR Object Signing and Encryption (COSE) ruby library"
+  spec.summary       = "Ruby implementation of RFC 8152 CBOR Object Signing and Encryption (COSE)"
   spec.homepage      = "https://github.com/cedarcode/cose-ruby"
   spec.license       = "MIT"
 
