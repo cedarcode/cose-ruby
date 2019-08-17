@@ -27,7 +27,7 @@ module COSE
         )
       end
 
-      attr_reader :kid, :alg, :key_ops, :base_iv
+      attr_accessor :kid, :alg, :key_ops, :base_iv
 
       def initialize(kid: nil, alg: nil, key_ops: nil, base_iv: nil)
         @kid = kid
