@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module COSE
   module Key
     # https://tools.ietf.org/html/rfc8152#section-13.1

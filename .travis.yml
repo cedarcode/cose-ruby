@@ -9,7 +9,6 @@ rvm:
   - 2.5.5
   - 2.4.6
   - 2.3.8
-  - 2.2.10
 
 gemfile:
   - gemfiles/openssl_head.gemfile
@@ -24,12 +23,4 @@ matrix:
   allow_failures:
     - rvm: ruby-head
     - rvm: 2.7.0-preview1
-    - rvm: 2.2.10
     - gemfile: gemfiles/openssl_head.gemfile
-  exclude:
-    - rvm: 2.2.10
-      gemfile: gemfiles/openssl_head.gemfile
-    - rvm: 2.2.10
-      gemfile: gemfiles/openssl_2_1.gemfile
-    - rvm: 2.2.10
-      gemfile: gemfiles/openssl_2_0.gemfile

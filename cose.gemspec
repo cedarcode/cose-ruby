@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.required_ruby_version = ">= 2.2"
+  spec.required_ruby_version = ">= 2.3"
 
   spec.add_dependency "cbor", "~> 0.5.9"
 
@@ -38,6 +38,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "byebug", ">= 10.0"
   spec.add_development_dependency "rake", "~> 12.3"
   spec.add_development_dependency "rspec", "~> 3.8"
-  spec.add_development_dependency "rubocop", "0.68.0"
-  spec.add_development_dependency "rubocop-performance", "~> 1.3"
+  spec.add_development_dependency "rubocop", "0.74.0"
+  spec.add_development_dependency "rubocop-performance", "~> 1.4"
 end

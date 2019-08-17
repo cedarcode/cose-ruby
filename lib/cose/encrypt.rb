@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "cose/security_message"
 require "cose/recipient"
 

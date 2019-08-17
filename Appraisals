@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 appraise "openssl_head" do
   gem "openssl", git: "https://github.com/ruby/openssl"
 end

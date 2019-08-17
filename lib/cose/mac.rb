@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "cbor"
 require "cose/recipient"
 require "cose/security_message"

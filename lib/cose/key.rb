@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "cbor"
 require "cose/key/ec2"
 require "cose/key/okp"
