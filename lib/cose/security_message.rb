@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "cbor"
+require "cose/error"
 
 module COSE
   class SecurityMessage
@@ -9,7 +10,11 @@ module COSE
     def self.deserialize(cbor)
       decoded = CBOR.decode(cbor)
 
-      if decoded.respond_to?(:value)
+      if decoded.is_a?(CBOR::Tagged)
+        if respond_to?(:tag) && tag != decoded.tag
+          raise(COSE::Error, "Invalid CBOR tag")
+        end
+
         decoded = decoded.value
       end
 

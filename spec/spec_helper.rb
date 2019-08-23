@@ -2,6 +2,7 @@
 
 require "cbor"
 require "byebug"
+require "json"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -15,6 +16,16 @@ RSpec.configure do |config|
   end
 end
 
-def create_security_message(protected_headers, unprotected_headers, *args)
-  CBOR::Tagged.new(0, [CBOR.encode(protected_headers), unprotected_headers, *args]).to_cbor
+def create_security_message(protected_headers, unprotected_headers, *args, cbor_tag: 0)
+  CBOR::Tagged.new(cbor_tag, [CBOR.encode(protected_headers), unprotected_headers, *args]).to_cbor
+end
+
+def wg_examples(relative_glob)
+  Dir.glob(File.expand_path("fixtures/cose-wg-examples/#{relative_glob}", __dir__)) do |file_name|
+    yield JSON.parse(File.read(file_name))
+  end
+end
+
+def hex_to_bytes(hex_string)
+  [hex_string].pack("H*")
 end
