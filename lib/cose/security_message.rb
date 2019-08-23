@@ -2,9 +2,12 @@
 
 require "cbor"
 require "cose/error"
+require "cose/security_message/headers"
 
 module COSE
   class SecurityMessage
+    ZERO_LENGTH_BIN_STRING = "".b
+
     attr_reader :protected_headers, :unprotected_headers
 
     def self.deserialize(cbor)
@@ -28,6 +31,24 @@ module COSE
     def initialize(protected_headers:, unprotected_headers:)
       @protected_headers = protected_headers
       @unprotected_headers = unprotected_headers
+    end
+
+    def headers
+      @headers ||= Headers.new(protected_headers, unprotected_headers)
+    end
+
+    private
+
+    def serialized_map(map)
+      if map && !map.empty?
+        map.to_cbor
+      else
+        zero_length_bin_string
+      end
+    end
+
+    def zero_length_bin_string
+      ZERO_LENGTH_BIN_STRING
     end
   end
 end
