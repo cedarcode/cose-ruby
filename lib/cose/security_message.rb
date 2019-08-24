@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "cbor"
+require "cose/algorithm"
 require "cose/error"
 require "cose/security_message/headers"
 
@@ -21,16 +22,24 @@ module COSE
         decoded = decoded.value
       end
 
+      from_array(decoded)
+    end
+
+    def self.from_array(array)
       new(
-        protected_headers: CBOR.decode(decoded[0]),
-        unprotected_headers: decoded[1],
-        **keyword_arguments_for_initialize(decoded[2..-1])
+        protected_headers: CBOR.decode(array[0]),
+        unprotected_headers: array[1],
+        **keyword_arguments_for_initialize(array[2..-1])
       )
     end
 
     def initialize(protected_headers:, unprotected_headers:)
       @protected_headers = protected_headers
       @unprotected_headers = unprotected_headers
+    end
+
+    def algorithm
+      @algorithm ||= COSE::Algorithm.find(headers.alg) || raise(COSE::Error, "Unsupported algorithm '#{headers.alg}'")
     end
 
     def headers

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "cbor"
+require "cose/key"
 require "cose/sign"
 require "cose/signature"
 
@@ -10,11 +11,12 @@ RSpec.describe "COSE::Sign" do
       cbor = create_security_message(
         { 1 => 2 },
         { 3 => 4 },
-        CBOR.encode("This is the content"),
+        "This is the content".b,
         [
-          create_security_message({ 5 => 6 }, { 7 => 8 }, "signatureA".b),
-          create_security_message({ 9 => 10 }, { 11 => 12 }, "signatureB".b)
-        ]
+          [CBOR.encode({ 5 => 6 }), { 7 => 8 }, "signatureA".b],
+          [CBOR.encode({ 9 => 10 }), { 11 => 12 }, "signatureB".b]
+        ],
+        cbor_tag: 98
       )
 
       @sign = COSE::Sign.deserialize(cbor)
@@ -29,12 +31,36 @@ RSpec.describe "COSE::Sign" do
     end
 
     it "returns payload" do
-      expect(@sign.payload).to eq("This is the content")
+      expect(@sign.payload).to eq("This is the content".b)
     end
 
     it "returns the signatures" do
       expect(@sign.signatures.size).to eq(2)
       expect(@sign.signatures.all? { |s| s.is_a?(COSE::Signature) }).to be_truthy
+    end
+  end
+
+  context "#verify" do
+    if pss_supported?
+      wg_examples("rsa-pss-examples/*.json") do |example|
+        it "passes #{example['title']}" do
+          key_data = example["input"]["sign"]["signers"][0]["key"]
+
+          key = COSE::Key::RSA.new(
+            kid: key_data["kid"],
+            n: hex_to_bytes(key_data["n_hex"]),
+            e: hex_to_bytes(key_data["e_hex"])
+          )
+
+          cbor = hex_to_bytes(example["output"]["cbor"])
+
+          if example["fail"]
+            expect { COSE::Sign.deserialize(cbor).verify(key) }.to raise_error(COSE::Error)
+          else
+            expect(COSE::Sign.deserialize(cbor).verify(key)).to be_truthy
+          end
+        end
+      end
     end
   end
 end

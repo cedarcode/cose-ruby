@@ -26,3 +26,6 @@ end
 COSE::Algorithm.register(-7, "ES256", "SHA256")
 COSE::Algorithm.register(-35, "ES384", "SHA384")
 COSE::Algorithm.register(-36, "ES512", "SHA512")
+COSE::Algorithm.register(-37, "PS256", "SHA256")
+COSE::Algorithm.register(-38, "PS384", "SHA384")
+COSE::Algorithm.register(-39, "PS512", "SHA512")

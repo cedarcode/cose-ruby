@@ -26,6 +26,10 @@ def wg_examples(relative_glob)
   end
 end
 
+def pss_supported?
+  OpenSSL::PKey::RSA.instance_methods.include?(:verify_pss)
+end
+
 def hex_to_bytes(hex_string)
   [hex_string].pack("H*")
 end

@@ -28,7 +28,7 @@ module COSE
 
     def verify(key, external_aad = nil)
       if key.kid == headers.kid
-        COSE::SignatureVerifier.new(headers.alg, key).verify(signature, verification_data(external_aad))
+        COSE::SignatureVerifier.for(algorithm).verify(key, signature, verification_data(external_aad))
       else
         raise(COSE::Error, "Non matching kid")
       end
