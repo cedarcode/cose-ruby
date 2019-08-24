@@ -1,27 +1,42 @@
 # frozen_string_literal: true
 
-require "cbor"
 require "cose/recipient"
-require "cose/security_message"
+require "cose/mac0"
 
 module COSE
-  class Mac < SecurityMessage
-    attr_reader :payload, :tag, :recipients
+  class Mac < Mac0
+    CONTEXT = "MAC"
+
+    attr_reader :recipients
 
     def self.keyword_arguments_for_initialize(decoded)
-      {
-        payload: CBOR.decode(decoded[0]),
-        tag: decoded[1],
-        recipients: decoded[2].map { |s| COSE::Recipient.deserialize(s) }
-      }
+      super.merge(recipients: decoded.last.map { |r| COSE::Recipient.from_array(r) })
     end
 
-    def initialize(payload:, tag:, recipients:, **keyword_arguments)
+    def self.tag
+      97
+    end
+
+    def initialize(recipients:, **keyword_arguments)
       super(**keyword_arguments)
 
-      @payload = payload
-      @tag = tag
       @recipients = recipients
+    end
+
+    def verify(key, external_aad = nil)
+      recipient = recipients.detect { |r| r.headers.kid == key.kid }
+
+      if recipient
+        super
+      else
+        raise(COSE::Error, "No recipient match the key")
+      end
+    end
+
+    private
+
+    def context
+      CONTEXT
     end
   end
 end

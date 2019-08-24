@@ -43,7 +43,11 @@ module COSE
     end
 
     def data(external_aad = nil)
-      CBOR.encode([CONTEXT, serialized_map(protected_headers), external_aad || zero_length_bin_string, payload])
+      CBOR.encode([context, serialized_map(protected_headers), external_aad || zero_length_bin_string, payload])
+    end
+
+    def context
+      CONTEXT
     end
   end
 end

@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
+require "base64"
 require "cbor"
+require "cose/error"
+require "cose/key"
 require "cose/mac"
 require "cose/recipient"
 
@@ -10,12 +13,13 @@ RSpec.describe "COSE::Mac" do
       cbor = create_security_message(
         { 1 => 2 },
         { 3 => 4 },
-        CBOR.encode("This is the content"),
+        "This is the content".b,
         "tag".b,
         [
-          create_security_message({ 5 => 6 }, { 6 => 7 }, "ciphertextA".b),
-          create_security_message({ 8 => 9 }, { 10 => 11 }, "ciphertextB".b)
-        ]
+          [CBOR.encode({ 5 => 6 }), { 6 => 7 }, "ciphertextA".b],
+          [CBOR.encode({ 8 => 9 }), { 10 => 11 }, "ciphertextB".b]
+        ],
+        cbor_tag: 97
       )
 
       @mac = COSE::Mac.deserialize(cbor)
@@ -30,7 +34,7 @@ RSpec.describe "COSE::Mac" do
     end
 
     it "returns the payload" do
-      expect(@mac.payload).to eq("This is the content")
+      expect(@mac.payload).to eq("This is the content".b)
     end
 
     it "returns the tag" do
@@ -40,6 +44,50 @@ RSpec.describe "COSE::Mac" do
     it "returns the recipients" do
       expect(@mac.recipients.size).to eq(2)
       expect(@mac.recipients.all? { |s| s.is_a?(COSE::Recipient) }).to be_truthy
+    end
+  end
+
+  context "#verify" do
+    wg_examples("mac-tests/*.json") do |example|
+      it "passes #{example['title']}" do
+        mac_data = example["input"]["mac"]
+        key_data = mac_data["recipients"][0]["key"]
+
+        key = COSE::Key::Symmetric.new(
+          kid: key_data["kid"],
+          k: Base64.urlsafe_decode64(key_data["k"])
+        )
+
+        external_aad = hex_to_bytes(mac_data["external"])
+        cbor = hex_to_bytes(example["output"]["cbor"])
+
+        if example["fail"]
+          expect { COSE::Mac.deserialize(cbor).verify(key, external_aad) }.to raise_error(COSE::Error)
+        else
+          expect(COSE::Mac.deserialize(cbor).verify(key, external_aad)).to be_truthy
+        end
+      end
+    end
+
+    wg_examples("hmac-examples/HMac-0*.json") do |example|
+      it "passes #{example['title']}" do
+        mac_data = example["input"]["mac"]
+        key_data = mac_data["recipients"][0]["key"]
+
+        key = COSE::Key::Symmetric.new(
+          kid: key_data["kid"],
+          k: Base64.urlsafe_decode64(key_data["k"])
+        )
+
+        external_aad = hex_to_bytes(mac_data["external"])
+        cbor = hex_to_bytes(example["output"]["cbor"])
+
+        if example["fail"]
+          expect { COSE::Mac.deserialize(cbor).verify(key, external_aad) }.to raise_error(COSE::Error)
+        else
+          expect(COSE::Mac.deserialize(cbor).verify(key, external_aad)).to be_truthy
+        end
+      end
     end
   end
 end
