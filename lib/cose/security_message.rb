@@ -27,10 +27,18 @@ module COSE
 
     def self.from_array(array)
       new(
-        protected_headers: CBOR.decode(array[0]),
+        protected_headers: deserialize_headers(array[0]),
         unprotected_headers: array[1],
         **keyword_arguments_for_initialize(array[2..-1])
       )
+    end
+
+    def self.deserialize_headers(data)
+      if data == ZERO_LENGTH_BIN_STRING
+        {}
+      else
+        CBOR.decode(data)
+      end
     end
 
     def initialize(protected_headers:, unprotected_headers:)
