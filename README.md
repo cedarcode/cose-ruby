@@ -145,15 +145,14 @@ cbor_data = "..."
 
 sign = COSE::Sign.deserialize(cbor_data)
 
-sign.protected_headers
-sign.unprotected_headers
-sign.payload
+# Verify by doing (key should be a COSE::Key):
+sign.verify(key)
 
-sign.signatures.each do |signature|
-  signature.protected_headers
-  signature.unprotected_headers
-  signature.signature
-end
+# or, if externally supplied authenticated data exists:
+sign.verify(key, external_aad)
+
+# Then access payload
+sign.payload
 ```
 
 #### COSE_Sign1
@@ -163,10 +162,14 @@ cbor_data = "..."
 
 sign1 = COSE::Sign1.deserialize(cbor_data)
 
-sign1.protected_headers
-sign1.unprotected_headers
+# Verify by doing (key should be a COSE::Key):
+sign1.verify(key)
+
+# or, if externally supplied authenticated data exists:
+sign1.verify(key, external_aad)
+
+# Then access payload
 sign1.payload
-sign1.signature
 ```
 
 ### MAC Objects
