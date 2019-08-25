@@ -3,7 +3,6 @@
 require "cbor"
 require "cose/error"
 require "cose/security_message"
-require "cose/signature_verifier"
 
 module COSE
   class Sign1 < SecurityMessage
@@ -28,7 +27,7 @@ module COSE
 
     def verify(key, external_aad = nil)
       if key.kid == headers.kid
-        COSE::SignatureVerifier.for(algorithm).verify(key, signature, verification_data(external_aad))
+        algorithm.verify(key, signature, verification_data(external_aad))
       else
         raise(COSE::Error, "Non matching kid")
       end

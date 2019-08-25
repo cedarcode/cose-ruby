@@ -4,7 +4,6 @@ require "cbor"
 require "cose/error"
 require "cose/security_message"
 require "cose/signature"
-require "cose/signature_verifier"
 
 module COSE
   class Sign < SecurityMessage
@@ -31,9 +30,7 @@ module COSE
       signature = signatures.detect { |s| s.headers.kid == key.kid }
 
       if signature
-        COSE::SignatureVerifier
-          .for(signature.algorithm)
-          .verify(key, signature.signature, verification_data(signature, external_aad))
+        signature.algorithm.verify(key, signature.signature, verification_data(signature, external_aad))
       else
         raise(COSE::Error, "No signature matches key kid")
       end

@@ -1,12 +1,18 @@
 # frozen_string_literal: true
 
-require "cose/signature_verifier/base"
+require "cose/algorithm/signature_algorithm"
 require "openssl"
 
 module COSE
-  module SignatureVerifier
-    class ECDSA < Base
-      BYTE_LENGTH = 8
+  module Algorithm
+    class ECDSA < SignatureAlgorithm
+      attr_reader :hash_function
+
+      def initialize(*args, hash_function:)
+        super(*args)
+
+        @hash_function = hash_function
+      end
 
       private
 

@@ -86,7 +86,7 @@ RSpec.describe "COSE::Sign" do
       end
     end
 
-    if pss_supported?
+    if rsa_pss_supported?
       wg_examples("rsa-pss-examples/*.json") do |example|
         it "passes #{example['title']}" do
           skip("PSS example appears to have used wrong salt length")

@@ -26,7 +26,7 @@ def wg_examples(relative_glob)
   end
 end
 
-def pss_supported?
+def rsa_pss_supported?
   OpenSSL::PKey::RSA.instance_methods.include?(:verify_pss)
 end
 

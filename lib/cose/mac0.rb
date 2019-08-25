@@ -6,7 +6,6 @@ require "openssl"
 
 module COSE
   class Mac0 < SecurityMessage
-    BYTE_LENGTH = 8
     CONTEXT = "MAC0"
 
     attr_reader :payload, :tag
@@ -27,20 +26,10 @@ module COSE
     end
 
     def verify(key, external_aad = nil)
-      tag == mac(key, external_aad) || raise(COSE::Error, "Mac0 verification failed")
+      tag == algorithm.mac(key.k, data(external_aad)) || raise(COSE::Error, "Mac0 verification failed")
     end
 
     private
-
-    def mac(key, external_aad = nil)
-      mac = OpenSSL::HMAC.digest(algorithm.hash_function, key.k, data(external_aad))
-
-      if algorithm.tag_length
-        mac.byteslice(0, algorithm.tag_length / BYTE_LENGTH)
-      else
-        mac
-      end
-    end
 
     def data(external_aad = nil)
       CBOR.encode([context, serialized_map(protected_headers), external_aad || zero_length_bin_string, payload])
