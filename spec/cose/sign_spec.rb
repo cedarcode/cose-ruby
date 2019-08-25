@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "base64"
 require "cbor"
 require "cose/key"
 require "cose/sign"
@@ -41,6 +42,50 @@ RSpec.describe "COSE::Sign" do
   end
 
   context "#verify" do
+    wg_examples("sign-tests/*.json") do |example|
+      it "passes #{example['title']}" do
+        signer_data = example["input"]["sign"]["signers"][0]
+        key_data = signer_data["key"]
+
+        key = COSE::Key::EC2.new(
+          kid: key_data["kid"],
+          crv: COSE::Key::Curve.by_name(key_data["crv"]).id,
+          x: Base64.urlsafe_decode64(key_data["x"]),
+          y: Base64.urlsafe_decode64(key_data["y"])
+        )
+
+        external_aad = hex_to_bytes(signer_data["external"])
+        cbor = hex_to_bytes(example["output"]["cbor"])
+
+        if example["fail"]
+          expect { COSE::Sign.deserialize(cbor).verify(key, external_aad) }.to raise_error(COSE::Error)
+        else
+          expect(COSE::Sign.deserialize(cbor).verify(key, external_aad)).to be_truthy
+        end
+      end
+    end
+
+    wg_examples("ecdsa-examples/ecdsa-0*.json") do |example|
+      it "passes #{example['title']}" do
+        key_data = example["input"]["sign"]["signers"][0]["key"]
+
+        key = COSE::Key::EC2.new(
+          kid: key_data["kid"],
+          crv: COSE::Key::Curve.by_name(key_data["crv"]).id,
+          x: Base64.urlsafe_decode64(key_data["x"]),
+          y: Base64.urlsafe_decode64(key_data["y"])
+        )
+
+        cbor = hex_to_bytes(example["output"]["cbor"])
+
+        if example["fail"]
+          expect { COSE::Sign.deserialize(cbor).verify(key) }.to raise_error(COSE::Error)
+        else
+          expect(COSE::Sign.deserialize(cbor).verify(key)).to be_truthy
+        end
+      end
+    end
+
     if pss_supported?
       wg_examples("rsa-pss-examples/*.json") do |example|
         it "passes #{example['title']}" do
