@@ -181,24 +181,14 @@ cbor_data = "..."
 
 mac = COSE::Mac.deserialize(cbor_data)
 
-mac.protected_headers
-mac.unprotected_headers
+# Verify by doing (key should be a COSE::Key::Symmetric):
+mac.verify(key)
+
+# or, if externally supplied authenticated data exists:
+mac.verify(key, external_aad)
+
+# Then access payload
 mac.payload
-mac.tag
-
-mac.recipients.each do |recipient|
-  recipient.protected_headers
-  recipient.unprotected_headers
-  recipient.ciphertext
-
-  if recipient.recipients
-    recipient.recipients.each do |recipient|
-      recipient.protected_headers
-      recipient.unprotected_headers
-      recipient.ciphertext
-    end
-  end
-end
 ```
 
 #### COSE_Mac0
@@ -208,10 +198,14 @@ cbor_data = "..."
 
 mac0 = COSE::Mac0.deserialize(cbor_data)
 
-mac0.protected_headers
-mac0.unprotected_headers
+# Verify by doing (key should be a COSE::Key::Symmetric):
+mac0.verify(key)
+
+# or, if externally supplied authenticated data exists:
+mac0.verify(key, external_aad)
+
+# Then access payload
 mac0.payload
-mac0.tag
 ```
 
 ### Encryption Objects
