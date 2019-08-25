@@ -55,5 +55,26 @@ RSpec.describe "COSE::Sign1" do
         end
       end
     end
+
+    wg_examples("ecdsa-examples/ecdsa-sig-*.json") do |example|
+      it "passes #{example['title']}" do
+        key_data = example["input"]["sign0"]["key"]
+
+        key = COSE::Key::EC2.new(
+          kid: key_data["kid"],
+          crv: COSE::Key::Curve.by_name(key_data["crv"]).id,
+          x: Base64.urlsafe_decode64(key_data["x"]),
+          y: Base64.urlsafe_decode64(key_data["y"])
+        )
+
+        cbor = hex_to_bytes(example["output"]["cbor"])
+
+        if example["fail"]
+          expect { COSE::Sign1.deserialize(cbor).verify(key) }.to raise_error(COSE::Error)
+        else
+          expect(COSE::Sign1.deserialize(cbor).verify(key)).to be_truthy
+        end
+      end
+    end
   end
 end
