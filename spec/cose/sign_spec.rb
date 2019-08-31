@@ -89,8 +89,6 @@ RSpec.describe "COSE::Sign" do
     if pss_supported?
       wg_examples("rsa-pss-examples/*.json") do |example|
         it "passes #{example['title']}" do
-          skip("PSS example appears to have used wrong salt length")
-
           key_data = example["input"]["sign"]["signers"][0]["key"]
 
           key = COSE::Key::RSA.new(
