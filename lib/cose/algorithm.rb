@@ -21,16 +21,16 @@ module COSE
     def self.by_name(name)
       @registered_by_name[name]
     end
+
+    register(ECDSA.new(-7, "ES256", hash_function: "SHA256"))
+    register(ECDSA.new(-35, "ES384", hash_function: "SHA384"))
+    register(ECDSA.new(-36, "ES512", hash_function: "SHA512"))
+    register(RSAPSS.new(-37, "PS256", hash_function: "SHA256", salt_length: 32))
+    register(RSAPSS.new(-38, "PS384", hash_function: "SHA384", salt_length: 48))
+    register(RSAPSS.new(-39, "PS512", hash_function: "SHA512", salt_length: 64))
+    register(HMAC.new(4, "HMAC 256/64", hash_function: "SHA256", tag_length: 64))
+    register(HMAC.new(5, "HMAC 256/256", hash_function: "SHA256", tag_length: 256))
+    register(HMAC.new(6, "HMAC 384/384", hash_function: "SHA384", tag_length: 384))
+    register(HMAC.new(7, "HMAC 512/512", hash_function: "SHA512", tag_length: 512))
   end
 end
-
-COSE::Algorithm.register(COSE::Algorithm::ECDSA.new(-7, "ES256", hash_function: "SHA256"))
-COSE::Algorithm.register(COSE::Algorithm::ECDSA.new(-35, "ES384", hash_function: "SHA384"))
-COSE::Algorithm.register(COSE::Algorithm::ECDSA.new(-36, "ES512", hash_function: "SHA512"))
-COSE::Algorithm.register(COSE::Algorithm::RSAPSS.new(-37, "PS256", hash_function: "SHA256", salt_length: 32))
-COSE::Algorithm.register(COSE::Algorithm::RSAPSS.new(-38, "PS384", hash_function: "SHA384", salt_length: 48))
-COSE::Algorithm.register(COSE::Algorithm::RSAPSS.new(-39, "PS512", hash_function: "SHA512", salt_length: 64))
-COSE::Algorithm.register(COSE::Algorithm::HMAC.new(4, "HMAC 256/64", hash_function: "SHA256", tag_length: 64))
-COSE::Algorithm.register(COSE::Algorithm::HMAC.new(5, "HMAC 256/256", hash_function: "SHA256", tag_length: 256))
-COSE::Algorithm.register(COSE::Algorithm::HMAC.new(6, "HMAC 384/384", hash_function: "SHA384", tag_length: 384))
-COSE::Algorithm.register(COSE::Algorithm::HMAC.new(7, "HMAC 512/512", hash_function: "SHA512", tag_length: 512))
