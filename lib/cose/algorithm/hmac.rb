@@ -18,11 +18,20 @@ module COSE
       def mac(key, to_be_signed)
         mac = OpenSSL::HMAC.digest(hash_function, key, to_be_signed)
 
-        if tag_length && tag_length / BYTE_LENGTH < mac.bytesize
-          mac.byteslice(0, tag_length / BYTE_LENGTH)
+        if tag_bytesize && tag_bytesize < mac.bytesize
+          mac.byteslice(0, tag_bytesize)
         else
           mac
         end
+      end
+
+      private
+
+      def tag_bytesize
+        @tag_bytesize ||=
+          if tag_length
+            tag_length / BYTE_LENGTH
+          end
       end
     end
   end
