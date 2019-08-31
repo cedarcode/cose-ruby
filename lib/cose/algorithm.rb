@@ -14,7 +14,11 @@ module COSE
       @registered_by_name[algorithm.name] = algorithm
     end
 
-    def self.find(id)
+    def self.find(id_or_name)
+      by_id(id_or_name) || by_name(id_or_name)
+    end
+
+    def self.by_id(id)
       @registered_by_id[id]
     end
 
