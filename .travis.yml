@@ -16,7 +16,7 @@ gemfile:
   - gemfiles/openssl_2_0.gemfile
   - gemfiles/openssl_default.gemfile
 
-before_install: gem install bundler -v '~> 1.17'
+before_install: gem install bundler -v '~> 2.0'
 
 matrix:
   fast_finish: true
