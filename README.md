@@ -1,6 +1,6 @@
-# cose
+# cose-ruby
 
-Ruby implementation of RFC 8152 CBOR Object Signing and Encryption (COSE)
+Ruby implementation of RFC [8152](https://tools.ietf.org/html/rfc8152) CBOR Object Signing and Encryption (COSE)
 
 [![Gem](https://img.shields.io/gem/v/cose.svg?style=flat-square)](https://rubygems.org/gems/cose)
 [![Travis](https://img.shields.io/travis/cedarcode/cose-ruby.svg?style=flat-square)](https://travis-ci.org/cedarcode/cose-ruby)
