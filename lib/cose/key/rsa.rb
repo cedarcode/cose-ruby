@@ -42,7 +42,7 @@ module COSE
           )
         end
 
-        new(attributes)
+        new(**attributes)
       end
 
       attr_reader :n, :e, :d, :p, :q, :dp, :dq, :qinv
