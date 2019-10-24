@@ -7,11 +7,12 @@ module COSE
   module Algorithm
     class SignatureAlgorithm < Base
       def verify(key, signature, verification_data)
+        compatible_key?(key) || raise(COSE::Error, "Incompatible key for signature verification")
         valid_signature?(key, signature, verification_data) || raise(COSE::Error, "Signature verification failed")
       end
 
       def compatible_key?(key)
-        to_pkey(key)
+        valid_key?(key) && to_pkey(key)
       rescue COSE::Error
         false
       end
@@ -29,7 +30,22 @@ module COSE
         end
       end
 
+      def to_cose_key(key)
+        case key
+        when COSE::Key::Base
+          key
+        when OpenSSL::PKey::PKey
+          COSE::Key.from_pkey(key)
+        else
+          raise(COSE::Error, "Don't know how to transform #{key.class} to COSE::Key")
+        end
+      end
+
       def signature_algorithm_class
+        raise NotImplementedError
+      end
+
+      def valid_key?(_key)
         raise NotImplementedError
       end
 

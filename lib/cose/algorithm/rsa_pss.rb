@@ -20,6 +20,10 @@ module COSE
 
       private
 
+      def valid_key?(key)
+        to_cose_key(key).is_a?(COSE::Key::RSA)
+      end
+
       def signature_algorithm_class
         OpenSSL::SignatureAlgorithm::RSAPSS
       end
