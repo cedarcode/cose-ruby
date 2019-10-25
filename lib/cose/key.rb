@@ -8,7 +8,10 @@ require "cose/key/symmetric"
 require "openssl"
 
 module COSE
-  class UnknownKeyType < StandardError; end
+  class Error < StandardError; end
+  class KeyDeserializationError < Error; end
+  class MalformedKeyError < KeyDeserializationError; end
+  class UnknownKeyType < KeyDeserializationError; end
 
   module Key
     def self.serialize(pkey)
@@ -27,7 +30,7 @@ module COSE
     end
 
     def self.deserialize(data)
-      map = CBOR.decode(data)
+      map = cbor_decode(data)
 
       case map[Base::LABEL_KTY]
       when COSE::Key::OKP::KTY_OKP
@@ -39,10 +42,16 @@ module COSE
       when COSE::Key::Symmetric::KTY_SYMMETRIC
         COSE::Key::Symmetric.from_map(map)
       when nil
-        raise UnknownKeyType, "Missing required key type kty label"
+        raise COSE::UnknownKeyType, "Missing required key type kty label"
       else
-        raise UnknownKeyType, "Unsupported or unknown key type #{map[Base::LABEL_KTY]}"
+        raise COSE::UnknownKeyType, "Unsupported or unknown key type #{map[Base::LABEL_KTY]}"
       end
+    end
+
+    def self.cbor_decode(data)
+      CBOR.decode(data)
+    rescue CBOR::MalformedFormatError, EOFError, FloatDomainError, RegexpError, TypeError, URI::InvalidURIError
+      raise COSE::MalformedKeyError, "Malformed CBOR key input"
     end
   end
 end
