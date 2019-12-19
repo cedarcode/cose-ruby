@@ -95,7 +95,7 @@
 - EC2 key object
 - Works with ruby 2.5
 
-[v0.8.0]: https://github.com/cedarcode/cose-ruby/compare/v0.8.0...v0.9.0/
+[v0.9.0]: https://github.com/cedarcode/cose-ruby/compare/v0.8.0...v0.9.0/
 [v0.8.0]: https://github.com/cedarcode/cose-ruby/compare/v0.7.0...v0.8.0/
 [v0.7.0]: https://github.com/cedarcode/cose-ruby/compare/v0.6.1...v0.7.0/
 [v0.6.1]: https://github.com/cedarcode/cose-ruby/compare/v0.6.0...v0.6.1/
