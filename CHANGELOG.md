@@ -1,5 +1,19 @@
 # Changelog
 
+## [v0.10.0] - 2019-12-19
+
+### Added
+
+- Works on ruby 2.7 without throwing any warnings
+- Simpler way to rescue key deserialization error, now possible to:
+  ```rb
+    begin
+      COSE::Key.deserialize(cbor)
+    rescue COSE::KeyDeserializationError
+      # handle error
+    end
+  ```
+
 ## [v0.9.0] - 2019-08-31
 
 ### Added
@@ -95,6 +109,7 @@
 - EC2 key object
 - Works with ruby 2.5
 
+[v0.10.0]: https://github.com/cedarcode/cose-ruby/compare/v0.9.0...v0.10.0/
 [v0.9.0]: https://github.com/cedarcode/cose-ruby/compare/v0.8.0...v0.9.0/
 [v0.8.0]: https://github.com/cedarcode/cose-ruby/compare/v0.7.0...v0.8.0/
 [v0.7.0]: https://github.com/cedarcode/cose-ruby/compare/v0.6.1...v0.7.0/
