@@ -47,7 +47,7 @@ module COSE
 
       attr_reader :n, :e, :d, :p, :q, :dp, :dq, :qinv
 
-      def initialize(n:, e:, d: nil, p: nil, q: nil, dp: nil, dq: nil, qinv: nil, **keyword_arguments) # rubocop:disable Naming/UncommunicativeMethodParamName
+      def initialize(n:, e:, d: nil, p: nil, q: nil, dp: nil, dq: nil, qinv: nil, **keyword_arguments) # rubocop:disable Naming/MethodParameterName
         super(**keyword_arguments)
 
         if !n

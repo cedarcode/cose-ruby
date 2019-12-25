@@ -48,7 +48,7 @@ module COSE
 
       attr_reader :y
 
-      def initialize(y: nil, **keyword_arguments) # rubocop:disable Naming/UncommunicativeMethodParamName
+      def initialize(y: nil, **keyword_arguments) # rubocop:disable Naming/MethodParameterName
         if (!y || !keyword_arguments[:x]) && !keyword_arguments[:d]
           raise ArgumentError, "Both x and y are required if d is missing"
         else

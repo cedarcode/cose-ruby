@@ -20,7 +20,7 @@ module COSE
         }
       end
 
-      def initialize(crv:, x: nil, d: nil, **keyword_arguments) # rubocop:disable Naming/UncommunicativeMethodParamName
+      def initialize(crv:, x: nil, d: nil, **keyword_arguments) # rubocop:disable Naming/MethodParameterName
         super(**keyword_arguments)
 
         if !crv
