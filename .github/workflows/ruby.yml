@@ -10,14 +10,16 @@ jobs:
     strategy:
       matrix:
         ruby: [ '2.7', '2.6', '2.5', '2.4', '2.3' ]
-    name: Ruby ${{ matrix.ruby }}
+        appraisal: [ 'openssl_2_1', 'openssl_2_0', 'openssl_default' ]
+    name: ${{ matrix.ruby }} - ${{ matrix.appraisal }}
     steps:
-    - uses: actions/checkout@v1
-    - uses: actions/setup-ruby@v1
-      with:
-        ruby-version: ${{ matrix.ruby }}
-    - name: Build and test with Rake
-      run: |
-        gem install bundler
-        bundle install --jobs 4 --retry 3
-        bundle exec rake
+      - uses: actions/checkout@v1
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - name: Build and test with Rake
+        run: |
+          gem install bundler
+          export BUNDLE_GEMFILE=./gemfiles/${{ matrix.appraisal }}.gemfile
+          bundle install --jobs 4 --retry 3
+          bundle exec rake
