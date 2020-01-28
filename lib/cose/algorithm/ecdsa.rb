@@ -4,6 +4,7 @@ require "cose/algorithm/signature_algorithm"
 require "cose/error"
 require "cose/key/ec2"
 require "openssl"
+require "openssl/signature_algorithm/ecdsa"
 
 module COSE
   module Algorithm
@@ -18,10 +19,8 @@ module COSE
 
       private
 
-      def valid_signature?(key, signature, verification_data)
-        pkey = to_pkey(key)
-
-        pkey.verify(hash_function, in_der(signature, pkey.group.degree), verification_data)
+      def signature_algorithm_class
+        OpenSSL::SignatureAlgorithm::ECDSA
       end
 
       def to_pkey(key)
@@ -32,23 +31,6 @@ module COSE
           key
         else
           raise(COSE::Error, "Incompatible key for algorithm")
-        end
-      end
-
-      # Borrowed from jwt rubygem.
-      # https://github.com/jwt/ruby-jwt/blob/7a6a3f1dbaff806993156d1dff9c217bb2523ff8/lib/jwt/security_utils.rb#L34-L39
-      #
-      # Hopefully this will be provided by openssl rubygem in the future.
-      def in_der(signature, key_length)
-        n = (key_length.to_f / BYTE_LENGTH).ceil
-
-        if signature.size == n * 2
-          r = signature[0..(n - 1)]
-          s = signature[n..-1]
-
-          OpenSSL::ASN1::Sequence.new([r, s].map { |int| OpenSSL::ASN1::Integer.new(OpenSSL::BN.new(int, 2)) }).to_der
-        else
-          signature
         end
       end
     end

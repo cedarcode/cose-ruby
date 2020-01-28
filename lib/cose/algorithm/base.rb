@@ -3,8 +3,6 @@
 module COSE
   module Algorithm
     class Base
-      BYTE_LENGTH = 8
-
       attr_reader :id, :name
 
       def initialize(id, name)
