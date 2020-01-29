@@ -17,12 +17,6 @@ module COSE
         @salt_length = salt_length
       end
 
-      def compatible_key?(key)
-        to_pkey(key)
-      rescue COSE::Error
-        false
-      end
-
       private
 
       def valid_signature?(key, signature, verification_data)

@@ -16,12 +16,6 @@ module COSE
         @hash_function = hash_function
       end
 
-      def compatible_key?(key)
-        to_pkey(key)
-      rescue COSE::Error
-        false
-      end
-
       private
 
       def valid_signature?(key, signature, verification_data)
