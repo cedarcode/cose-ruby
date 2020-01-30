@@ -4,6 +4,7 @@ require "cose/algorithm/signature_algorithm"
 require "cose/key/rsa"
 require "cose/error"
 require "openssl"
+require "openssl/signature_algorithm/rsapss"
 
 module COSE
   module Algorithm
@@ -19,14 +20,8 @@ module COSE
 
       private
 
-      def valid_signature?(key, signature, verification_data)
-        pkey = to_pkey(key)
-
-        if pkey.respond_to?(:verify_pss)
-          pkey.verify_pss(hash_function, signature, verification_data, salt_length: :digest, mgf1_hash: hash_function)
-        else
-          raise(COSE::Error, "Update to openssl gem >= v2.1 to have RSA-PSS support")
-        end
+      def signature_algorithm_class
+        OpenSSL::SignatureAlgorithm::RSAPSS
       end
 
       def to_pkey(key)

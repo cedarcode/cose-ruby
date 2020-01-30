@@ -6,6 +6,8 @@ require "openssl"
 module COSE
   module Algorithm
     class HMAC < Base
+      BYTE_LENGTH = 8
+
       attr_reader :hash_function, :tag_length
 
       def initialize(*args, hash_function:, tag_length:)
