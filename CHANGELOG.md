@@ -6,7 +6,7 @@
 
 - Signature verification validates key `alg` is compatible with the signature algorithm
 
-NOTE: No breaking changes. Moving out of v0.x` to express the intention to keep the public API stable.
+NOTE: No breaking changes. Moving out of `v0.x` to express the intention to keep the public API stable.
 
 ## [v0.11.0] - 2020-01-30
 
