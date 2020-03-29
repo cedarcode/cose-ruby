@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.0.0] - 2020-03-29
+
+### Added
+
+- Signature verification validates key `alg` is compatible with the signature algorithm
+
+NOTE: No breaking changes. Moving out of v0.x` to express the intention to keep the public API stable.
+
 ## [v0.11.0] - 2020-01-30
 
 ### Added
@@ -115,6 +123,7 @@
 - EC2 key object
 - Works with ruby 2.5
 
+[v1.0.0]: https://github.com/cedarcode/cose-ruby/compare/v0.11.0...v1.0.0/
 [v0.11.0]: https://github.com/cedarcode/cose-ruby/compare/v0.10.0...v0.11.0/
 [v0.10.0]: https://github.com/cedarcode/cose-ruby/compare/v0.9.0...v0.10.0/
 [v0.9.0]: https://github.com/cedarcode/cose-ruby/compare/v0.8.0...v0.9.0/
