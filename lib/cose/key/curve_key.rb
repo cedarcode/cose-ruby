@@ -35,13 +35,11 @@ module COSE
       end
 
       def map
-        map = super.merge(
+        super.merge(
           LABEL_CRV => crv,
           LABEL_X => x,
           LABEL_D => d
-        )
-
-        map.reject { |_k, v| v.nil? }
+        ).compact
       end
     end
   end

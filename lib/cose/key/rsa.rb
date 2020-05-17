@@ -74,7 +74,7 @@ module COSE
       end
 
       def map
-        map = super.merge(
+        super.merge(
           Base::LABEL_KTY => KTY_RSA,
           LABEL_N => n,
           LABEL_E => e,
@@ -84,9 +84,7 @@ module COSE
           LABEL_DP => dp,
           LABEL_DQ => dq,
           LABEL_QINV => qinv
-        )
-
-        map.reject { |_k, v| v.nil? }
+        ).compact
       end
 
       def to_pkey

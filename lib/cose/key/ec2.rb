@@ -59,12 +59,10 @@ module COSE
       end
 
       def map
-        map = super.merge(
+        super.merge(
           Base::LABEL_KTY => KTY_EC2,
           LABEL_Y => y,
-        )
-
-        map.reject { |_k, v| v.nil? }
+        ).compact
       end
 
       def to_pkey
