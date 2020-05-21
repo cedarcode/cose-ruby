@@ -38,6 +38,50 @@ RSpec.describe COSE::Key::OKP do
     end
   end
 
+  context "#to_pkey" do
+    if curve_25519_supported?
+      it "works for an Ed25519 private key" do
+        original_pkey = OpenSSL::PKey.generate_key("ED25519")
+        pkey = COSE::Key::OKP.from_pkey(original_pkey).to_pkey
+
+        expect(pkey).to be_a(OpenSSL::PKey::PKey)
+        expect(pkey.oid).to eq("ED25519")
+        expect(pkey.public_to_der).to eq(original_pkey.public_to_der)
+        expect(pkey.private_to_der).to eq(original_pkey.private_to_der)
+      end
+
+      it "works for an Ed25519 public key" do
+        original_pkey = OpenSSL::PKey.generate_key("ED25519")
+        public_key = OpenSSL::PKey.read(original_pkey.public_to_der)
+        pkey = COSE::Key::OKP.from_pkey(public_key).to_pkey
+
+        expect(pkey).to be_a(OpenSSL::PKey::PKey)
+        expect(pkey.oid).to eq("ED25519")
+        expect(pkey.public_to_der).to eq(original_pkey.public_to_der)
+      end
+
+      it "works for an Ed448 private key" do
+        original_pkey = OpenSSL::PKey.generate_key("ED448")
+        pkey = COSE::Key::OKP.from_pkey(original_pkey).to_pkey
+
+        expect(pkey).to be_a(OpenSSL::PKey::PKey)
+        expect(pkey.oid).to eq("ED448")
+        expect(pkey.public_to_der).to eq(original_pkey.public_to_der)
+        expect(pkey.private_to_der).to eq(original_pkey.private_to_der)
+      end
+
+      it "works for an Ed25519 public key" do
+        original_pkey = OpenSSL::PKey.generate_key("ED448")
+        public_key = OpenSSL::PKey.read(original_pkey.public_to_der)
+        pkey = COSE::Key::OKP.from_pkey(public_key).to_pkey
+
+        expect(pkey).to be_a(OpenSSL::PKey::PKey)
+        expect(pkey.oid).to eq("ED448")
+        expect(pkey.public_to_der).to eq(original_pkey.public_to_der)
+      end
+    end
+  end
+
   describe ".deserialize" do
     it "works" do
       key = COSE::Key::OKP.deserialize(

@@ -86,6 +86,29 @@ RSpec.describe "COSE::Sign" do
       end
     end
 
+    if curve_25519_supported?
+      wg_examples("eddsa-examples/eddsa-0*.json") do |example|
+        it "passes #{example['title']}" do
+          key_data = example["input"]["sign"]["signers"][0]["key"]
+
+          key = COSE::Key::OKP.new(
+            kid: key_data["kid"],
+            crv: COSE::Key::Curve.by_name(key_data["crv"]).id,
+            x: hex_to_bytes(key_data["x_hex"]),
+            d: hex_to_bytes(key_data["d_hex"])
+          )
+
+          cbor = hex_to_bytes(example["output"]["cbor"])
+
+          if example["fail"]
+            expect { COSE::Sign.deserialize(cbor).verify(key) }.to raise_error(COSE::Error)
+          else
+            expect(COSE::Sign.deserialize(cbor).verify(key)).to be_truthy
+          end
+        end
+      end
+    end
+
     if rsa_pss_supported?
       wg_examples("rsa-pss-examples/*.json") do |example|
         it "passes #{example['title']}" do

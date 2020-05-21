@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "cose/algorithm/ecdsa"
+require "cose/algorithm/eddsa"
 require "cose/algorithm/hmac"
 require "cose/algorithm/rsa_pss"
 
@@ -29,6 +30,7 @@ module COSE
     register(ECDSA.new(-7, "ES256", hash_function: "SHA256"))
     register(ECDSA.new(-35, "ES384", hash_function: "SHA384"))
     register(ECDSA.new(-36, "ES512", hash_function: "SHA512"))
+    register(EDDSA.new(-8, "EdDSA"))
     register(RSAPSS.new(-37, "PS256", hash_function: "SHA256", salt_length: 32))
     register(RSAPSS.new(-38, "PS384", hash_function: "SHA384", salt_length: 48))
     register(RSAPSS.new(-39, "PS512", hash_function: "SHA512", salt_length: 64))
