@@ -32,3 +32,4 @@ end
 COSE::Key::Curve.register(1, "P-256", "prime256v1")
 COSE::Key::Curve.register(2, "P-384", "secp384r1")
 COSE::Key::Curve.register(3, "P-521", "secp521r1")
+COSE::Key::Curve.register(8, "secp256k1", "secp256k1")

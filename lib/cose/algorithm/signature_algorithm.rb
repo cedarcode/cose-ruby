@@ -20,7 +20,7 @@ module COSE
       private
 
       def valid_signature?(key, signature, verification_data)
-        signature_algorithm = signature_algorithm_class.new(hash_function: hash_function)
+        signature_algorithm = signature_algorithm_class.new(**signature_algorithm_parameters)
         signature_algorithm.verify_key = to_pkey(key)
 
         begin
@@ -28,6 +28,10 @@ module COSE
         rescue OpenSSL::SignatureAlgorithm::Error
           false
         end
+      end
+
+      def signature_algorithm_parameters
+        { hash_function: hash_function }
       end
 
       def to_cose_key(key)

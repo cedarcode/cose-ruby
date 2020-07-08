@@ -121,6 +121,16 @@ RSpec.describe COSE::Key::EC2 do
       expect(pkey.public_key).to eq(original_pkey.public_key)
       expect(pkey.private_key).to eq(original_pkey.private_key)
     end
+
+    it "works for an EC key in the secp256k1 curve" do
+      original_pkey = OpenSSL::PKey::EC.new("secp256k1").generate_key
+      pkey = COSE::Key::EC2.from_pkey(original_pkey).to_pkey
+
+      expect(pkey).to be_a(OpenSSL::PKey::EC)
+      expect(pkey.group.curve_name).to eq("secp256k1")
+      expect(pkey.public_key).to eq(original_pkey.public_key)
+      expect(pkey.private_key).to eq(original_pkey.private_key)
+    end
   end
 
   describe "#serialize" do

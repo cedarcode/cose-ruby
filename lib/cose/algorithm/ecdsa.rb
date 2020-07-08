@@ -2,6 +2,7 @@
 
 require "cose/algorithm/signature_algorithm"
 require "cose/error"
+require "cose/key/curve"
 require "cose/key/ec2"
 require "openssl"
 require "openssl/signature_algorithm/ecdsa"
@@ -9,12 +10,13 @@ require "openssl/signature_algorithm/ecdsa"
 module COSE
   module Algorithm
     class ECDSA < SignatureAlgorithm
-      attr_reader :hash_function
+      attr_reader :hash_function, :curve
 
-      def initialize(*args, hash_function:)
+      def initialize(*args, hash_function:, curve_name:)
         super(*args)
 
         @hash_function = hash_function
+        @curve = COSE::Key::Curve.by_name(curve_name) || raise("Couldn't find curve with name='#{curve_name}'")
       end
 
       private
@@ -27,6 +29,14 @@ module COSE
 
       def signature_algorithm_class
         OpenSSL::SignatureAlgorithm::ECDSA
+      end
+
+      def signature_algorithm_parameters
+        if curve
+          super.merge(curve: curve.pkey_name)
+        else
+          super
+        end
       end
 
       def to_pkey(key)

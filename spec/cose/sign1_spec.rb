@@ -63,6 +63,7 @@ RSpec.describe "COSE::Sign1" do
 
         key = COSE::Key::EC2.new(
           kid: key_data["kid"],
+          alg: COSE::Algorithm.by_name(example["input"]["sign0"]["alg"]).id,
           crv: COSE::Key::Curve.by_name(key_data["crv"]).id,
           x: Base64.urlsafe_decode64(key_data["x"]),
           y: Base64.urlsafe_decode64(key_data["y"])
