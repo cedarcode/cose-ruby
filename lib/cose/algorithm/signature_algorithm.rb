@@ -20,7 +20,7 @@ module COSE
       private
 
       def valid_signature?(key, signature, verification_data)
-        signature_algorithm = signature_algorithm_class.new(hash_function[3..-1])
+        signature_algorithm = signature_algorithm_class.new(hash_function: hash_function)
         signature_algorithm.verify_key = to_pkey(key)
 
         begin
