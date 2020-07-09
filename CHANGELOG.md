@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.1.0] - 2020-07-09
+
+### Dependencies
+
+- Update `openssl-signature_algorithm` runtime dependency from `~> 0.4.0` to `~> 1.0`.
+
 ## [v1.0.0] - 2020-03-29
 
 ### Added
@@ -123,6 +129,7 @@ NOTE: No breaking changes. Moving out of `v0.x` to express the intention to keep
 - EC2 key object
 - Works with ruby 2.5
 
+[v1.1.0]: https://github.com/cedarcode/cose-ruby/compare/v1.0.0...v1.1.0/
 [v1.0.0]: https://github.com/cedarcode/cose-ruby/compare/v0.11.0...v1.0.0/
 [v0.11.0]: https://github.com/cedarcode/cose-ruby/compare/v0.10.0...v0.11.0/
 [v0.10.0]: https://github.com/cedarcode/cose-ruby/compare/v0.9.0...v0.10.0/
