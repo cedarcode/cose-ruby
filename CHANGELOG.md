@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.2.0] - 2020-07-10
+
+### Added
+
+- Support ES256K signature algorithm
+
 ## [v1.1.0] - 2020-07-09
 
 ### Dependencies
@@ -129,6 +135,7 @@ NOTE: No breaking changes. Moving out of `v0.x` to express the intention to keep
 - EC2 key object
 - Works with ruby 2.5
 
+[v1.2.0]: https://github.com/cedarcode/cose-ruby/compare/v1.1.0...v1.2.0/
 [v1.1.0]: https://github.com/cedarcode/cose-ruby/compare/v1.0.0...v1.1.0/
 [v1.0.0]: https://github.com/cedarcode/cose-ruby/compare/v0.11.0...v1.0.0/
 [v0.11.0]: https://github.com/cedarcode/cose-ruby/compare/v0.10.0...v0.11.0/
