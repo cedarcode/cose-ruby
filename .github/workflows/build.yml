@@ -16,6 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
+          - 3.1
           - 3.0.0
           - 2.7.2
           - 2.6.6
@@ -26,6 +27,9 @@ jobs:
           - openssl_2_1
           - openssl_2_0
           - openssl_default
+        exclude:
+          - ruby: 3.1
+            gemfile: openssl_2_0
     env:
       BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
     steps:
