@@ -93,7 +93,7 @@ RSpec.describe COSE::Key::EC2 do
 
   context "#to_pkey" do
     it "works for an EC key in the P-256 curve" do
-      original_pkey = OpenSSL::PKey::EC.new("prime256v1").generate_key
+      original_pkey = OpenSSL::PKey::EC.generate("prime256v1")
       pkey = COSE::Key::EC2.from_pkey(original_pkey).to_pkey
 
       expect(pkey).to be_a(OpenSSL::PKey::EC)
@@ -103,7 +103,7 @@ RSpec.describe COSE::Key::EC2 do
     end
 
     it "works for an EC key in the P-384 curve" do
-      original_pkey = OpenSSL::PKey::EC.new("secp384r1").generate_key
+      original_pkey = OpenSSL::PKey::EC.generate("secp384r1")
       pkey = COSE::Key::EC2.from_pkey(original_pkey).to_pkey
 
       expect(pkey).to be_a(OpenSSL::PKey::EC)
@@ -113,7 +113,7 @@ RSpec.describe COSE::Key::EC2 do
     end
 
     it "works for an EC key in the P-521 curve" do
-      original_pkey = OpenSSL::PKey::EC.new("secp521r1").generate_key
+      original_pkey = OpenSSL::PKey::EC.generate("secp521r1")
       pkey = COSE::Key::EC2.from_pkey(original_pkey).to_pkey
 
       expect(pkey).to be_a(OpenSSL::PKey::EC)
@@ -123,7 +123,7 @@ RSpec.describe COSE::Key::EC2 do
     end
 
     it "works for an EC key in the secp256k1 curve" do
-      original_pkey = OpenSSL::PKey::EC.new("secp256k1").generate_key
+      original_pkey = OpenSSL::PKey::EC.generate("secp256k1")
       pkey = COSE::Key::EC2.from_pkey(original_pkey).to_pkey
 
       expect(pkey).to be_a(OpenSSL::PKey::EC)

@@ -7,7 +7,7 @@ require "openssl"
 RSpec.describe COSE::Key do
   describe ".serialize" do
     it "can serialize EC P-256 key" do
-      key = OpenSSL::PKey::EC.new("prime256v1").generate_key
+      key = OpenSSL::PKey::EC.generate("prime256v1")
 
       cbor = COSE::Key.serialize(key)
       map = CBOR.decode(cbor)
@@ -21,7 +21,7 @@ RSpec.describe COSE::Key do
     end
 
     it "can serialize EC P-384 key" do
-      key = OpenSSL::PKey::EC.new("secp384r1").generate_key
+      key = OpenSSL::PKey::EC.generate("secp384r1")
 
       cbor = COSE::Key.serialize(key)
       map = CBOR.decode(cbor)
@@ -35,7 +35,7 @@ RSpec.describe COSE::Key do
     end
 
     it "can serialize EC P-521 key" do
-      key = OpenSSL::PKey::EC.new("secp521r1").generate_key
+      key = OpenSSL::PKey::EC.generate("secp521r1")
 
       cbor = COSE::Key.serialize(key)
       map = CBOR.decode(cbor)
