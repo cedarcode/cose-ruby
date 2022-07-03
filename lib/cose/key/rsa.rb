@@ -88,31 +88,28 @@ module COSE
       end
 
       def to_pkey
-        pkey = OpenSSL::PKey::RSA.new
-
-        if pkey.respond_to?(:set_key)
-          pkey.set_key(bn(n), bn(e), bn(d))
-        else
-          pkey.n = bn(n)
-          pkey.e = bn(e)
-          pkey.d = bn(d)
-        end
+        # PKCS#1 RSAPublicKey
+        asn1 = OpenSSL::ASN1::Sequence([
+          OpenSSL::ASN1::Integer.new(bn(n)),
+          OpenSSL::ASN1::Integer.new(bn(e)),
+        ])
+        pkey = OpenSSL::PKey::RSA.new(asn1.to_der)
 
         if private?
-          if pkey.respond_to?(:set_factors)
-            pkey.set_factors(bn(p), bn(q))
-          else
-            pkey.p = bn(p)
-            pkey.q = bn(q)
-          end
+          # PKCS#1 RSAPrivateKey
+          asn1 = OpenSSL::ASN1::Sequence([
+            OpenSSL::ASN1::Integer.new(0),
+            OpenSSL::ASN1::Integer.new(bn(n)),
+            OpenSSL::ASN1::Integer.new(bn(e)),
+            OpenSSL::ASN1::Integer.new(bn(d)),
+            OpenSSL::ASN1::Integer.new(bn(p)),
+            OpenSSL::ASN1::Integer.new(bn(q)),
+            OpenSSL::ASN1::Integer.new(bn(dp)),
+            OpenSSL::ASN1::Integer.new(bn(dq)),
+            OpenSSL::ASN1::Integer.new(bn(qinv)),
+          ])
 
-          if pkey.respond_to?(:set_crt_params)
-            pkey.set_crt_params(bn(dp), bn(dq), bn(qinv))
-          else
-            pkey.dmp1 = bn(dp)
-            pkey.dmq1 = bn(dq)
-            pkey.iqmp = bn(qinv)
-          end
+          pkey = OpenSSL::PKey::RSA.new(asn1.to_der)
         end
 
         pkey

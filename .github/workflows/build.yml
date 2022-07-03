@@ -22,6 +22,7 @@ jobs:
           - 2.5.8
           - 2.4.10
         gemfile:
+          - openssl_3_0
           - openssl_2_2
           - openssl_2_1
           - openssl_2_0

@@ -71,13 +71,31 @@ module COSE
           pkey = OpenSSL::PKey::EC.new(group)
           public_key_bn = OpenSSL::BN.new("\x04" + x + y, 2)
           public_key_point = OpenSSL::PKey::EC::Point.new(group, public_key_bn)
-          pkey.public_key = public_key_point
+
+          # RFC5480 SubjectPublicKeyInfo
+          asn1 = OpenSSL::ASN1::Sequence([
+            OpenSSL::ASN1::Sequence([
+              OpenSSL::ASN1::ObjectId("id-ecPublicKey"),
+              OpenSSL::ASN1::ObjectId(curve.pkey_name),
+            ]),
+            OpenSSL::ASN1::BitString(public_key_point.to_octet_string(:uncompressed))
+          ])
 
           if d
-            pkey.private_key = OpenSSL::BN.new(d, 2)
+            # RFC5915 ECPrivateKey
+            asn1 = OpenSSL::ASN1::Sequence([
+              OpenSSL::ASN1::Integer.new(1),
+              # Not properly padded but OpenSSL doesn't mind
+              OpenSSL::ASN1::OctetString(OpenSSL::BN.new(d, 2).to_s(2)),
+              OpenSSL::ASN1::ObjectId(curve.pkey_name, 0, :EXPLICIT),
+              OpenSSL::ASN1::BitString(public_key_point.to_octet_string(:uncompressed), 1, :EXPLICIT),
+            ])
+
+            der = asn1.to_der
+            return OpenSSL::PKey::EC.new(der)
           end
 
-          pkey
+          OpenSSL::PKey::EC.new(asn1.to_der)
         else
           raise "Unsupported curve #{crv}"
         end
