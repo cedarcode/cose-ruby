@@ -89,25 +89,29 @@ module COSE
 
       def to_pkey
         # PKCS#1 RSAPublicKey
-        asn1 = OpenSSL::ASN1::Sequence([
-          OpenSSL::ASN1::Integer.new(bn(n)),
-          OpenSSL::ASN1::Integer.new(bn(e)),
-        ])
+        asn1 = OpenSSL::ASN1::Sequence(
+          [
+            OpenSSL::ASN1::Integer.new(bn(n)),
+            OpenSSL::ASN1::Integer.new(bn(e)),
+          ]
+        )
         pkey = OpenSSL::PKey::RSA.new(asn1.to_der)
 
         if private?
           # PKCS#1 RSAPrivateKey
-          asn1 = OpenSSL::ASN1::Sequence([
-            OpenSSL::ASN1::Integer.new(0),
-            OpenSSL::ASN1::Integer.new(bn(n)),
-            OpenSSL::ASN1::Integer.new(bn(e)),
-            OpenSSL::ASN1::Integer.new(bn(d)),
-            OpenSSL::ASN1::Integer.new(bn(p)),
-            OpenSSL::ASN1::Integer.new(bn(q)),
-            OpenSSL::ASN1::Integer.new(bn(dp)),
-            OpenSSL::ASN1::Integer.new(bn(dq)),
-            OpenSSL::ASN1::Integer.new(bn(qinv)),
-          ])
+          asn1 = OpenSSL::ASN1::Sequence(
+            [
+              OpenSSL::ASN1::Integer.new(0),
+              OpenSSL::ASN1::Integer.new(bn(n)),
+              OpenSSL::ASN1::Integer.new(bn(e)),
+              OpenSSL::ASN1::Integer.new(bn(d)),
+              OpenSSL::ASN1::Integer.new(bn(p)),
+              OpenSSL::ASN1::Integer.new(bn(q)),
+              OpenSSL::ASN1::Integer.new(bn(dp)),
+              OpenSSL::ASN1::Integer.new(bn(dq)),
+              OpenSSL::ASN1::Integer.new(bn(qinv)),
+            ]
+          )
 
           pkey = OpenSSL::PKey::RSA.new(asn1.to_der)
         end
