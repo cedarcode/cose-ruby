@@ -30,6 +30,11 @@ def rsa_pss_supported?
   OpenSSL::PKey::RSA.instance_methods.include?(:verify_pss)
 end
 
+def curve_25519_supported?
+  OpenSSL::OPENSSL_VERSION_NUMBER >= 0x10101000 && # >= v1.1.1
+    defined?(OpenSSL::PKey.generate_key)
+end
+
 def hex_to_bytes(hex_string)
   [hex_string].pack("H*")
 end
