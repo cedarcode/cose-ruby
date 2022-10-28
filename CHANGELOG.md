@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.3.0] - 2022-10-28
+
+- Add support for EdDSA (#55). Credits to @bdewater.
+
 ## [v1.2.1] - 2022-07-03
 
 - Support OpenSSL ~>3.0.0. Credits to @ClearlyClaire <3
@@ -139,7 +143,8 @@ NOTE: No breaking changes. Moving out of `v0.x` to express the intention to keep
 - EC2 key object
 - Works with ruby 2.5
 
-[v1.2.0]: https://github.com/cedarcode/cose-ruby/compare/v1.2.0...v1.2.1/
+[v1.3.0]: https://github.com/cedarcode/cose-ruby/compare/v1.2.1...v1.3.0/
+[v1.2.1]: https://github.com/cedarcode/cose-ruby/compare/v1.2.0...v1.2.1/
 [v1.2.0]: https://github.com/cedarcode/cose-ruby/compare/v1.1.0...v1.2.0/
 [v1.1.0]: https://github.com/cedarcode/cose-ruby/compare/v1.0.0...v1.1.0/
 [v1.0.0]: https://github.com/cedarcode/cose-ruby/compare/v0.11.0...v1.0.0/
