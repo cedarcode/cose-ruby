@@ -24,6 +24,8 @@ module COSE
         COSE::Key::EC2.from_pkey(pkey)
       when OpenSSL::PKey::RSA
         COSE::Key::RSA.from_pkey(pkey)
+      when OpenSSL::PKey::PKey
+        COSE::Key::OKP.from_pkey(pkey)
       else
         raise "Unsupported #{pkey.class} object"
       end
