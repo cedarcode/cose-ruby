@@ -2,9 +2,18 @@
 
 require "cose/key/ec2"
 require "openssl"
+require "base64"
+require "cose/key"
 
 RSpec.describe COSE::Key::EC2 do
   describe ".new" do
+    it "tests" do
+      encoded_key='pQECAyYgASFYHynGYDi87vkqpFOep_onzrmNjPdVBthCuIua9pvBCssiWCBZnNAreTzLOVZrLcTrh6eh-v5GrdemuIS-bVvXrk7Wdw=='
+      cose_key=COSE::Key.deserialize(Base64.urlsafe_decode64(encoded_key))
+      cose_key.to_pkey
+    end
+
+
     it "validates crv presence" do
       expect { COSE::Key::EC2.new(crv: nil, x: "x".b, y: "y".b) }.to raise_error("Required crv is missing")
     end
@@ -130,6 +139,29 @@ RSpec.describe COSE::Key::EC2 do
       expect(pkey.group.curve_name).to eq("secp256k1")
       expect(pkey.public_key).to eq(original_pkey.public_key)
       expect(pkey.private_key).to eq(original_pkey.private_key)
+    end
+
+    it "works for an EC key that omits leading zero" do
+      # x was encoded omitting a leading zero. Before calling OpenSSL we must pad it.
+      x = ")\xC6`8\xBC\xEE\xF9*\xA4S\x9E\xA7\xFA'\xCE\xB9\x8D\x8C\xF7U\x06\xD8B\xB8\x8B\x9A\xF6\x9B\xC1\n\xCB".b
+      y = "Y\x9C\xD0+y<\xCB9Vk-\xC4\xEB\x87\xA7\xA1\xFA\xFEF\xAD\xD7\xA6\xB8\x84\xBEm[\xD7\xAEN\xD6w".b
+      original_key = COSE::Key::EC2.new(
+        kid: "id".b,
+        alg: -7,
+        key_ops: 1,
+        base_iv: "init-vector".b,
+        crv: 1,
+        x: x,
+        y: y,
+      )
+
+      pkey = original_key.to_pkey
+      key = COSE::Key::EC2.from_pkey(pkey)
+
+      expect(pkey).to be_a(OpenSSL::PKey::EC)
+      expect(pkey.group.curve_name).to eq("prime256v1")
+      expect(key.x).to eq("\0".b + x)
+      expect(key.y).to eq(y)
     end
   end
 

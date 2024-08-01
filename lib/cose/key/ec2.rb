@@ -11,6 +11,8 @@ module COSE
 
       KTY_EC2 = 2
 
+      ZERO_BYTE = "\0".b
+
       def self.enforce_type(map)
         if map[LABEL_KTY] != KTY_EC2
           raise "Not an EC2 key"
@@ -68,7 +70,7 @@ module COSE
       def to_pkey
         if curve
           group = OpenSSL::PKey::EC::Group.new(curve.pkey_name)
-          public_key_bn = OpenSSL::BN.new("\x04" + x + y, 2)
+          public_key_bn = OpenSSL::BN.new("\x04" + pad_coordinate(group, x) + pad_coordinate(group, y), 2)
           public_key_point = OpenSSL::PKey::EC::Point.new(group, public_key_bn)
 
           # RFC5480 SubjectPublicKeyInfo
@@ -112,6 +114,14 @@ module COSE
 
       def self.keyword_arguments_for_initialize(map)
         super.merge(y: map[LABEL_Y])
+      end
+
+      def pad_coordinate(group, coordinate)
+        coordinate_length = (group.degree + 7) / 8
+        padding_required = coordinate_length - coordinate.length
+        return coordinate if padding_required <= 0
+
+        (ZERO_BYTE * padding_required) + coordinate
       end
     end
   end
