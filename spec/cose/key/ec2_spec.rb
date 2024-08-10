@@ -2,18 +2,9 @@
 
 require "cose/key/ec2"
 require "openssl"
-require "base64"
-require "cose/key"
 
 RSpec.describe COSE::Key::EC2 do
   describe ".new" do
-    it "tests" do
-      encoded_key='pQECAyYgASFYHynGYDi87vkqpFOep_onzrmNjPdVBthCuIua9pvBCssiWCBZnNAreTzLOVZrLcTrh6eh-v5GrdemuIS-bVvXrk7Wdw=='
-      cose_key=COSE::Key.deserialize(Base64.urlsafe_decode64(encoded_key))
-      cose_key.to_pkey
-    end
-
-
     it "validates crv presence" do
       expect { COSE::Key::EC2.new(crv: nil, x: "x".b, y: "y".b) }.to raise_error("Required crv is missing")
     end
