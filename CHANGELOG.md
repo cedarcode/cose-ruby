@@ -1,6 +1,6 @@
 # Changelog
 
-## [v1.3.1] - 2024-08-12
+## [v1.3.1](https://github.com/cedarcode/cose-ruby/compare/v1.3.0...v1.3.1/) - 2024-08-12
 
 - Handling COSE EC keys encoded without leading 0 bytes in coordinates (#64). Credits to @waltercacau.
 
