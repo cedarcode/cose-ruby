@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.3.1] - 2024-08-12
+
+- Handling COSE EC keys encoded without leading 0 bytes in coordinates (#64). Credits to @waltercacau.
+
 ## [v1.3.0] - 2022-10-28
 
 - Add support for EdDSA (#55). Credits to @bdewater.
