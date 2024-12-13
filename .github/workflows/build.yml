@@ -25,6 +25,8 @@ jobs:
           - 2.5
           - 2.4
         gemfile:
+          - openssl_3_2
+          - openssl_3_1
           - openssl_3_0
           - openssl_2_2
           - openssl_2_1
@@ -32,8 +34,19 @@ jobs:
         exclude:
           - ruby: '2.4'
             gemfile: openssl_3_0
+          - ruby: '2.4'
+            gemfile: openssl_3_1
+          - ruby: '2.4'
+            gemfile: openssl_3_2
           - ruby: '2.5'
             gemfile: openssl_3_0
+          - ruby: '2.5'
+            gemfile: openssl_3_1
+          - ruby: '2.5'
+            gemfile: openssl_3_2
+          - ruby: '2.6'
+            gemfile: openssl_3_2
+
     env:
       BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
     steps:
