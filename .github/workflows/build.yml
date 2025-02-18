@@ -23,7 +23,6 @@ jobs:
           - 2.7
           - 2.6
           - 2.5
-          - 2.4
         gemfile:
           - openssl_3_2
           - openssl_3_1
@@ -32,12 +31,6 @@ jobs:
           - openssl_2_1
           - openssl_default
         exclude:
-          - ruby: '2.4'
-            gemfile: openssl_3_0
-          - ruby: '2.4'
-            gemfile: openssl_3_1
-          - ruby: '2.4'
-            gemfile: openssl_3_2
           - ruby: '2.5'
             gemfile: openssl_3_0
           - ruby: '2.5'
