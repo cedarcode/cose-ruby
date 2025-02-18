@@ -29,7 +29,6 @@ jobs:
           - openssl_3_1
           - openssl_3_0
           - openssl_2_2
-          - openssl_2_1
           - openssl_default
         exclude:
           - ruby: '2.4'
