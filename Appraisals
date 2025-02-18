@@ -20,5 +20,9 @@ appraise "openssl_3_2" do
   gem "openssl", "~> 3.2.0"
 end
 
+appraise "openssl_3_3" do
+  gem "openssl", "~> 3.3.0"
+end
+
 appraise "openssl_default" do
 end
