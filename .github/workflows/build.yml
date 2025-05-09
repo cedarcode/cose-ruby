@@ -26,7 +26,7 @@ jobs:
       - name: Lint code for consistent style
         run: bundle exec rubocop -f github
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -74,9 +74,28 @@ jobs:
       BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
     steps:
     - uses: actions/checkout@v2
+
     - run: rm Gemfile.lock
-    - uses: ruby/setup-ruby@v1
+
+    - name: Install OpenSSL
+      if: matrix.ruby != '2.4'
+      uses: ./.github/actions/install-openssl
+      with:
+        version: "1.1.1w"
+        os: ${{ runner.os }}
+
+    - name: Manually set up Ruby
+      if: matrix.ruby != '2.4'
+      uses: ./.github/actions/install-ruby
+      with:
+        version: ${{ matrix.ruby }}
+        os: ${{ runner.os }}
+
+    - name: Set up Ruby
+      if: matrix.ruby == '2.4'
+      uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
+
     - run: bundle exec rspec
