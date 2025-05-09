@@ -78,15 +78,24 @@ jobs:
     - run: rm Gemfile.lock
 
     - name: Install OpenSSL
+      if: matrix.ruby != '2.4'
       uses: ./.github/actions/install-openssl
       with:
         version: "1.1.1w"
         os: ${{ runner.os }}
 
     - name: Manually set up Ruby
+      if: matrix.ruby != '2.4'
       uses: ./.github/actions/install-ruby
       with:
         version: ${{ matrix.ruby }}
         os: ${{ runner.os }}
+
+    - name: Set up Ruby
+      if: matrix.ruby == '2.4'
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+        bundler-cache: true
 
     - run: bundle exec rspec
