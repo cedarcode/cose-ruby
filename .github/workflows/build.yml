@@ -74,9 +74,19 @@ jobs:
       BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
     steps:
     - uses: actions/checkout@v2
+
     - run: rm Gemfile.lock
-    - uses: ruby/setup-ruby@v1
+
+    - name: Install OpenSSL
+      uses: ./.github/actions/install-openssl
       with:
-        ruby-version: ${{ matrix.ruby }}
-        bundler-cache: true
+        version: "1.1.1w"
+        os: ${{ runner.os }}
+
+    - name: Manually set up Ruby
+      uses: ./.github/actions/install-ruby
+      with:
+        version: ${{ matrix.ruby }}
+        os: ${{ runner.os }}
+
     - run: bundle exec rspec
