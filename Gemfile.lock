@@ -74,7 +74,6 @@ PLATFORMS
 DEPENDENCIES
   appraisal (~> 2.2.0)
   base64 (~> 0.2)
-  bundler (>= 1.17, < 3)
   byebug (~> 11.0)
   cose!
   rake (~> 13.0)
