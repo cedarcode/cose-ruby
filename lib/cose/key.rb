@@ -6,6 +6,7 @@ require "cose/key/okp"
 require "cose/key/rsa"
 require "cose/key/symmetric"
 require "openssl"
+require "uri"
 
 module COSE
   class Error < StandardError; end
@@ -52,7 +53,8 @@ module COSE
 
     def self.cbor_decode(data)
       CBOR.decode(data)
-    rescue CBOR::MalformedFormatError, EOFError, FloatDomainError, RegexpError, TypeError, URI::InvalidURIError
+    rescue CBOR::MalformedFormatError, CBOR::StackError, EOFError, FloatDomainError, RegexpError, TypeError,
+           URI::InvalidURIError
       raise COSE::MalformedKeyError, "Malformed CBOR key input"
     end
   end
