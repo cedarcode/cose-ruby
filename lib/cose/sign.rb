@@ -39,16 +39,15 @@ module COSE
     private
 
     def verification_data(signature, external_aad = nil)
-      @verification_data ||=
-        CBOR.encode(
-          [
-            CONTEXT,
-            serialized_map(protected_headers),
-            serialized_map(signature.protected_headers),
-            external_aad || ZERO_LENGTH_BIN_STRING,
-            payload
-          ]
-        )
+      CBOR.encode(
+        [
+          CONTEXT,
+          serialized_map(protected_headers),
+          serialized_map(signature.protected_headers),
+          external_aad || ZERO_LENGTH_BIN_STRING,
+          payload
+        ]
+      )
     end
   end
 end
