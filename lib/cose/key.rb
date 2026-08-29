@@ -6,6 +6,7 @@ require "cose/key/okp"
 require "cose/key/rsa"
 require "cose/key/symmetric"
 require "openssl"
+require "uri"
 
 module COSE
   class Error < StandardError; end
