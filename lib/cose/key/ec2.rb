@@ -70,8 +70,13 @@ module COSE
       def to_pkey
         if curve
           group = OpenSSL::PKey::EC::Group.new(curve.pkey_name)
-          public_key_bn = OpenSSL::BN.new("\x04" + pad_coordinate(group, x) + pad_coordinate(group, y), 2)
-          public_key_point = OpenSSL::PKey::EC::Point.new(group, public_key_bn)
+          public_key_point = if x && y
+                               coordinates = pad_coordinate(group, x) + pad_coordinate(group, y)
+                               public_key_bn = OpenSSL::BN.new("\x04" + coordinates, 2)
+                               OpenSSL::PKey::EC::Point.new(group, public_key_bn)
+                             else
+                               group.generator.mul(OpenSSL::BN.new(d, 2))
+                             end
 
           # RFC5480 SubjectPublicKeyInfo
           asn1 = OpenSSL::ASN1::Sequence(
