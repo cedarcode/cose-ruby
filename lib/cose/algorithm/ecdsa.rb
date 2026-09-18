@@ -2,6 +2,7 @@
 
 require "cose/algorithm/signature_algorithm"
 require "cose/error"
+require "cose/key/coordinate_padding"
 require "cose/key/curve"
 require "cose/key/ec2"
 require "openssl"
@@ -22,6 +23,10 @@ module COSE
       private
 
       def generate_signature(pkey, data)
+        unless pkey.group.curve_name == curve.pkey_name
+          raise(COSE::Error, "Incompatible key for algorithm")
+        end
+
         der_to_raw(pkey.sign(hash_function, data), pkey.group.degree)
       end
 
@@ -32,15 +37,10 @@ module COSE
         coordinate_length = (degree + 7) / 8
 
         OpenSSL::ASN1.decode(der_signature).value.map do |integer|
-          pad_coordinate(integer.value.to_s(2), coordinate_length)
+          # `OpenSSL::ASN1::Integer#value` is an `OpenSSL::BN`, whose `#to_s(2)` returns the
+          # coordinate as a big-endian binary string (MPI without the leading length bytes).
+          COSE::Key::CoordinatePadding.pad_coordinate(integer.value.to_s(2), coordinate_length)
         end.join
-      end
-
-      def pad_coordinate(coordinate, length)
-        padding_required = length - coordinate.bytesize
-        return coordinate if padding_required <= 0
-
-        ("\x00".b * padding_required) + coordinate
       end
 
       def valid_key?(key)

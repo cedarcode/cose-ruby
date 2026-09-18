@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "cose/key/coordinate_padding"
 require "cose/key/curve"
 require "cose/key/curve_key"
 require "openssl"
@@ -10,8 +11,6 @@ module COSE
       LABEL_Y = -3
 
       KTY_EC2 = 2
-
-      ZERO_BYTE = "\0".b
 
       def self.enforce_type(map)
         if map[LABEL_KTY] != KTY_EC2
@@ -118,10 +117,8 @@ module COSE
 
       def pad_coordinate(group, coordinate)
         coordinate_length = (group.degree + 7) / 8
-        padding_required = coordinate_length - coordinate.length
-        return coordinate if padding_required <= 0
 
-        (ZERO_BYTE * padding_required) + coordinate
+        CoordinatePadding.pad_coordinate(coordinate, coordinate_length)
       end
     end
   end

@@ -230,5 +230,18 @@ RSpec.describe "COSE::Sign1" do
 
       expect { sign1.sign(public_key) }.to raise_error(COSE::Error)
     end
+
+    it "raises COSE::Error when signing with a key whose curve doesn't match the header alg's curve" do
+      algorithm = COSE::Algorithm.by_name("ES384") # expects a P-384 key
+      key = COSE::Key::EC2.from_pkey(OpenSSL::PKey::EC.generate("prime256v1")) # P-256
+
+      sign1 = COSE::Sign1.new(
+        protected_headers: { 1 => algorithm.id },
+        unprotected_headers: {},
+        payload: "content".b
+      )
+
+      expect { sign1.sign(key) }.to raise_error(COSE::Error, "Incompatible key for algorithm")
+    end
   end
 end
