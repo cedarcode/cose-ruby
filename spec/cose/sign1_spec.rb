@@ -33,6 +33,28 @@ RSpec.describe "COSE::Sign1" do
     end
   end
 
+  context "#to_array" do
+    it "returns the protected bstr, unprotected headers, payload and signature" do
+      cbor = create_security_message({ 1 => -7 }, { 4 => "11" }, "This is the content".b, "signature".b, cbor_tag: 18)
+
+      sign1 = COSE::Sign1.deserialize(cbor)
+
+      expect(sign1.to_array).to eq(
+        [CBOR.encode(1 => -7), { 4 => "11" }, "This is the content".b, "signature".b]
+      )
+    end
+
+    it "raises COSE::Error when there's no signature yet" do
+      sign1 = COSE::Sign1.new(
+        protected_headers: { 1 => COSE::Algorithm.by_name("ES256").id },
+        unprotected_headers: {},
+        payload: "content".b
+      )
+
+      expect { sign1.to_array }.to raise_error(COSE::Error)
+    end
+  end
+
   context "#verify" do
     wg_examples("sign1-tests/*.json") do |example|
       it "passes #{example['title']}" do
@@ -205,6 +227,25 @@ RSpec.describe "COSE::Sign1" do
       expect(deserialized.payload).to be_nil
       expect(deserialized.verify(key, detached_payload: detached_payload)).to be(true)
       expect { deserialized.verify(key) }.to raise_error(COSE::Error)
+    end
+
+    it "supports signing a detached payload directly, without building a second Sign1" do
+      algorithm = COSE::Algorithm.by_name("ES256")
+      key = COSE::Key::EC2.from_pkey(OpenSSL::PKey::EC.generate("prime256v1"))
+      detached_payload = "Detached content, not embedded in the message".b
+
+      sign1 = COSE::Sign1.new(
+        protected_headers: { 1 => algorithm.id },
+        unprotected_headers: {},
+        payload: nil
+      )
+
+      expect(sign1.sign(key, detached_payload: detached_payload)).to be(sign1)
+
+      deserialized = COSE::Sign1.deserialize(sign1.serialize)
+
+      expect(deserialized.payload).to be_nil
+      expect(deserialized.verify(key, detached_payload: detached_payload)).to be(true)
     end
 
     it "raises COSE::Error when serializing before signing" do

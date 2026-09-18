@@ -25,8 +25,8 @@ module COSE
       @signature = signature
     end
 
-    def sign(key, external_aad = nil)
-      @signature = algorithm.sign(key, verification_data(external_aad))
+    def sign(key, external_aad = nil, detached_payload: nil)
+      @signature = algorithm.sign(key, verification_data(external_aad, detached_payload))
 
       self
     end
@@ -39,12 +39,14 @@ module COSE
       end
     end
 
-    def serialize
+    def to_array
       raise(COSE::Error, "Can't serialize a Sign1 message without a signature") unless signature
 
-      array = [serialized_map(protected_headers), unprotected_headers || {}, payload, signature]
+      [serialized_map(protected_headers), unprotected_headers || {}, payload, signature]
+    end
 
-      CBOR.encode(CBOR::Tagged.new(self.class.tag, array))
+    def serialize
+      CBOR.encode(CBOR::Tagged.new(self.class.tag, to_array))
     end
 
     private
