@@ -190,6 +190,25 @@ sign1.sign(key) # sets sign1.signature and returns sign1
 cbor_data = sign1.serialize
 ```
 
+To produce a detached signature directly (without embedding the payload or building two
+`COSE::Sign1` instances), pass `detached_payload:` to `#sign`, mirroring `#verify`:
+
+```ruby
+sign1 = COSE::Sign1.new(
+  protected_headers: { 1 => COSE::Algorithm.by_name("ES256").id },
+  unprotected_headers: {},
+  payload: nil
+)
+
+sign1.sign(key, detached_payload: "This is the content".b)
+
+cbor_data = sign1.serialize
+```
+
+`COSE::Sign1#to_array` returns the `[protected_bstr, unprotected_headers, payload, signature]`
+array used by `#serialize`, for consumers that need it without going through
+`CBOR.decode(sign1.serialize)`.
+
 ### MAC Objects
 
 #### COSE_Mac

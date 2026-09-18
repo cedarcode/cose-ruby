@@ -4,12 +4,27 @@
 
 ### Added
 
-- `COSE::Sign1#sign(key, external_aad = nil)` to create COSE_Sign1 signatures (ECDSA, RSA-PSS and EdDSA), and
-  `COSE::Sign1#serialize` to encode a signed message back into CBOR (tag 18).
+- `COSE::Sign1#sign(key, external_aad = nil, detached_payload: nil)` to create COSE_Sign1 signatures (ECDSA,
+  RSA-PSS and EdDSA), and `COSE::Sign1#serialize` to encode a signed message back into CBOR (tag 18). The
+  `detached_payload:` keyword lets a detached signature be produced directly, without building a second
+  `COSE::Sign1` instance to sign the content.
 - `COSE::Sign1#verify` now accepts a `detached_payload:` keyword argument, used as the signed content when
   `payload` is `nil` (COSE_Sign1 with detached content, e.g. mdoc `DeviceSignature`).
+- `COSE::Sign1#to_array`, returning the `[protected_bstr, unprotected_headers, payload, signature]` array used
+  by `#serialize`, for consumers that need it without going through `CBOR.decode(sign1.serialize)`.
 - `COSE::Algorithm::SignatureAlgorithm#sign(key, data)`, implemented for `ECDSA`, `RSAPSS` and `EdDSA`; raises
   `COSE::Error` when the key has no private key material or is otherwise incompatible with the algorithm.
+
+### Fixed
+
+- `COSE::Algorithm::ECDSA#sign` (used by `COSE::Sign1#sign`) now raises `COSE::Error` instead of silently
+  producing an unverifiable signature when the key's curve doesn't match the algorithm's curve (e.g. header alg
+  `ES384` signed with a P-256 key).
+- Verifying a COSE_Sign1/COSE_Sign signature with a key whose curve doesn't match the header alg's curve now
+  raises `COSE::Error` ("Signature verification failed") instead of leaking
+  `OpenSSL::SignatureAlgorithm::VerifyKeyError`.
+- `COSE::Algorithm::SignatureAlgorithm#sign` now rescues `OpenSSL::OpenSSLError` (instead of the narrower
+  `OpenSSL::PKey::PKeyError`), also covering `OpenSSL::ASN1::ASN1Error`.
 
 ## [v1.3.1](https://github.com/cedarcode/cose-ruby/compare/v1.3.0...v1.3.1/) - 2024-08-12
 
