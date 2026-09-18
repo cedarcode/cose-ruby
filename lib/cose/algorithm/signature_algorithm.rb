@@ -17,7 +17,7 @@ module COSE
 
         begin
           generate_signature(to_pkey(key), data)
-        rescue ArgumentError, OpenSSL::PKey::PKeyError => e
+        rescue ArgumentError, OpenSSL::OpenSSLError => e
           raise(COSE::Error, "Signing failed: #{e.message}")
         end
       end
