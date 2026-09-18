@@ -168,8 +168,26 @@ sign1.verify(key)
 # or, if externally supplied authenticated data exists:
 sign1.verify(key, external_aad)
 
+# or, if the payload isn't embedded in the message (detached content):
+sign1.verify(key, detached_payload: payload)
+
 # Then access payload
 sign1.payload
+```
+
+To create a new COSE_Sign1 message, `key` should be a `COSE::Key` (or an `OpenSSL::PKey`) carrying private key
+material:
+
+```ruby
+sign1 = COSE::Sign1.new(
+  protected_headers: { 1 => COSE::Algorithm.by_name("ES256").id },
+  unprotected_headers: {},
+  payload: "This is the content".b
+)
+
+sign1.sign(key) # sets sign1.signature and returns sign1
+
+cbor_data = sign1.serialize
 ```
 
 ### MAC Objects

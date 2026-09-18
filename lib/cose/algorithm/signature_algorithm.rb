@@ -2,6 +2,7 @@
 
 require "cose/algorithm/base"
 require "cose/error"
+require "openssl"
 
 module COSE
   module Algorithm
@@ -11,6 +12,16 @@ module COSE
         valid_signature?(key, signature, verification_data) || raise(COSE::Error, "Signature verification failed")
       end
 
+      def sign(key, data)
+        compatible_key?(key) || raise(COSE::Error, "Incompatible key for signature generation")
+
+        begin
+          generate_signature(to_pkey(key), data)
+        rescue ArgumentError, OpenSSL::PKey::PKeyError => e
+          raise(COSE::Error, "Signing failed: #{e.message}")
+        end
+      end
+
       def compatible_key?(key)
         valid_key?(key) && to_pkey(key)
       rescue COSE::Error
@@ -18,6 +29,10 @@ module COSE
       end
 
       private
+
+      def generate_signature(_pkey, _data)
+        raise(COSE::Error, "Signing not supported for this algorithm")
+      end
 
       def valid_signature?(key, signature, verification_data)
         signature_algorithm = signature_algorithm_class.new(**signature_algorithm_parameters)

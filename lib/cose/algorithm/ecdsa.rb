@@ -21,6 +21,28 @@ module COSE
 
       private
 
+      def generate_signature(pkey, data)
+        der_to_raw(pkey.sign(hash_function, data), pkey.group.degree)
+      end
+
+      # OpenSSL::PKey::EC#sign returns an ASN1 DER encoded ECDSA-Sig-Value (a SEQUENCE of two
+      # INTEGERs, r and s), while COSE (RFC 8152 8.1) requires the raw concatenation of r and s,
+      # each padded to the curve's coordinate length.
+      def der_to_raw(der_signature, degree)
+        coordinate_length = (degree + 7) / 8
+
+        OpenSSL::ASN1.decode(der_signature).value.map do |integer|
+          pad_coordinate(integer.value.to_s(2), coordinate_length)
+        end.join
+      end
+
+      def pad_coordinate(coordinate, length)
+        padding_required = length - coordinate.bytesize
+        return coordinate if padding_required <= 0
+
+        ("\x00".b * padding_required) + coordinate
+      end
+
       def valid_key?(key)
         cose_key = to_cose_key(key)
 

@@ -1,5 +1,16 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- `COSE::Sign1#sign(key, external_aad = nil)` to create COSE_Sign1 signatures (ECDSA, RSA-PSS and EdDSA), and
+  `COSE::Sign1#serialize` to encode a signed message back into CBOR (tag 18).
+- `COSE::Sign1#verify` now accepts a `detached_payload:` keyword argument, used as the signed content when
+  `payload` is `nil` (COSE_Sign1 with detached content, e.g. mdoc `DeviceSignature`).
+- `COSE::Algorithm::SignatureAlgorithm#sign(key, data)`, implemented for `ECDSA`, `RSAPSS` and `EdDSA`; raises
+  `COSE::Error` when the key has no private key material or is otherwise incompatible with the algorithm.
+
 ## [v1.3.1](https://github.com/cedarcode/cose-ruby/compare/v1.3.0...v1.3.1/) - 2024-08-12
 
 - Handling COSE EC keys encoded without leading 0 bytes in coordinates (#64). Credits to @waltercacau.

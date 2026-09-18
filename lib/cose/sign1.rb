@@ -18,25 +18,41 @@ module COSE
       18
     end
 
-    def initialize(payload:, signature:, **keyword_arguments)
+    def initialize(payload:, signature: nil, **keyword_arguments)
       super(**keyword_arguments)
 
       @payload = payload
       @signature = signature
     end
 
-    def verify(key, external_aad = nil)
+    def sign(key, external_aad = nil)
+      @signature = algorithm.sign(key, verification_data(external_aad))
+
+      self
+    end
+
+    def verify(key, external_aad = nil, detached_payload: nil)
       if key.kid == headers.kid
-        algorithm.verify(key, signature, verification_data(external_aad))
+        algorithm.verify(key, signature, verification_data(external_aad, detached_payload))
       else
         raise(COSE::Error, "Non matching kid")
       end
     end
 
+    def serialize
+      raise(COSE::Error, "Can't serialize a Sign1 message without a signature") unless signature
+
+      array = [serialized_map(protected_headers), unprotected_headers || {}, payload, signature]
+
+      CBOR.encode(CBOR::Tagged.new(self.class.tag, array))
+    end
+
     private
 
-    def verification_data(external_aad = nil)
-      CBOR.encode([CONTEXT, serialized_map(protected_headers), external_aad || ZERO_LENGTH_BIN_STRING, payload])
+    def verification_data(external_aad = nil, detached_payload = nil)
+      aad = external_aad || ZERO_LENGTH_BIN_STRING
+
+      CBOR.encode([CONTEXT, serialized_map(protected_headers), aad, payload || detached_payload])
     end
   end
 end
