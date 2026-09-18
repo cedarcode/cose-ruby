@@ -36,9 +36,9 @@ module COSE
 
       def valid_signature?(key, signature, verification_data)
         signature_algorithm = signature_algorithm_class.new(**signature_algorithm_parameters)
-        signature_algorithm.verify_key = to_pkey(key)
 
         begin
+          signature_algorithm.verify_key = to_pkey(key)
           signature_algorithm.verify(signature, verification_data)
         rescue OpenSSL::SignatureAlgorithm::Error
           false

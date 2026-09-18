@@ -103,6 +103,17 @@ RSpec.describe "COSE::Sign1" do
         end
       end
     end
+
+    it "raises COSE::Error, not OpenSSL::SignatureAlgorithm::VerifyKeyError, when the key's curve " \
+       "doesn't match the header alg's curve" do
+      key = COSE::Key::EC2.from_pkey(OpenSSL::PKey::EC.generate("prime256v1")) # P-256
+
+      # ES384 (alg -35) expects a P-384 key; verifying with a P-256 key must not leak the
+      # underlying openssl-signature_algorithm VerifyKeyError.
+      cbor = create_security_message({ 1 => -35 }, {}, "content".b, "signature".b, cbor_tag: 18)
+
+      expect { COSE::Sign1.deserialize(cbor).verify(key) }.to raise_error(COSE::Error, "Signature verification failed")
+    end
   end
 
   context "#sign and #serialize" do
