@@ -21,7 +21,9 @@ module COSE
       private
 
       def valid_key?(key)
-        to_cose_key(key).is_a?(COSE::Key::RSA)
+        cose_key = to_cose_key(key)
+
+        cose_key.is_a?(COSE::Key::RSA) && (!cose_key.alg || cose_key.alg == id)
       end
 
       def signature_algorithm_class
