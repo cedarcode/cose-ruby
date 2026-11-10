@@ -1,5 +1,16 @@
 # Changelog
 
+## [v1.4.0](https://github.com/cedarcode/cose-ruby/compare/v1.3.1...v1.4.0/) - 2026-11-10
+
+### Fixed
+
+- `COSE::Sign` now builds the verification data for each signature instead of reusing the data from the first one (#80). Credits to @OskarEichler.
+- RSA-PSS algorithms now reject a COSE key whose `alg` doesn't match the algorithm (#81). Credits to @OskarEichler.
+
+### Dependencies
+
+- Update `cbor` runtime dependency from `~> 0.5.9` to `~> 0.6.2.2` (#85). Credits to @stanhu.
+
 ## [v1.3.1](https://github.com/cedarcode/cose-ruby/compare/v1.3.0...v1.3.1/) - 2024-08-12
 
 - Handling COSE EC keys encoded without leading 0 bytes in coordinates (#64). Credits to @waltercacau.
