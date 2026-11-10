@@ -78,6 +78,13 @@ RSpec.describe COSE::Key do
   end
 
   describe ".deserialize" do
+    it "normalizes excessive CBOR nesting" do
+      data = "\x81".b * 1024 + "\x00".b
+
+      expect { CBOR.decode(data) }.to raise_error(CBOR::StackError)
+      expect { COSE::Key.deserialize(data) }.to raise_error(COSE::MalformedKeyError)
+    end
+
     it "returns error if unknown format" do
       expect {
         COSE::Key.deserialize(

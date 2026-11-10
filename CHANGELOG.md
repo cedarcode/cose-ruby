@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Normalize CBOR unpacking errors, including excessive nesting, as `COSE::MalformedKeyError`.
+- Load `uri` explicitly for malformed URI error handling. This enables the `cbor` gem's tag-32 URI decoding process-wide: valid tag-32 values become URI objects instead of `CBOR::Tagged`, and invalid values can raise `URI::InvalidURIError` outside COSE. This behavior change should ship in a minor release.
+
 ## [v1.3.1](https://github.com/cedarcode/cose-ruby/compare/v1.3.0...v1.3.1/) - 2024-08-12
 
 - Handling COSE EC keys encoded without leading 0 bytes in coordinates (#64). Credits to @waltercacau.
